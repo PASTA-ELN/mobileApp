@@ -13,7 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins":[
+    "plugins": [
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics"
     ],
@@ -24,7 +24,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pasta",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,13 +40,13 @@
       "favicon": "./assets/favicon.png",
       "config": {
         "firebase": {
-            "apiKey": "AIzaSyBHt1CLLZHDBYHS2erMeal93c69qEpXrxY",
-            "authDomain": "pasta-mobile-app.firebaseapp.com",
-            "projectId": "pasta-mobile-app",
-            "storageBucket": "pasta-mobile-app.appspot.com",
-            "messagingSenderId": "672619119522",
-            "appId": "1:672619119522:web:e4dd99ca83857f910428fb",
-            "measurementId": "G-P615QJ00VS"
+          "apiKey": "AIzaSyBHt1CLLZHDBYHS2erMeal93c69qEpXrxY",
+          "authDomain": "pasta-mobile-app.firebaseapp.com",
+          "projectId": "pasta-mobile-app",
+          "storageBucket": "pasta-mobile-app.appspot.com",
+          "messagingSenderId": "672619119522",
+          "appId": "1:672619119522:web:e4dd99ca83857f910428fb",
+          "measurementId": "G-P615QJ00VS"
         }
       }
     }
