@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "672619119522",
+    "project_id": "pasta-mobile-app",
+    "storage_bucket": "pasta-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672619119522:android:f92ee753468bceb70428fb",
+        "android_client_info": {
+          "package_name": "com.micromechanics.pasta"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "672619119522-6trq4tuhaaplql8hnicl3lkjdh2ii2uc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrSORUhz-jEU2olUZK6UY2NMHt3V7EPxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "672619119522-6trq4tuhaaplql8hnicl3lkjdh2ii2uc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "672619119522-1rn0s3ea4cnosb4auci7nipdrimrao1t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.Pasta"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
