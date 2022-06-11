@@ -121,10 +121,5 @@ dist/
 
 # @end expo-cli
 
-#secrets
-google-services.json
-*.keystore
-*.jks
-
 # misc
 .vscode/
