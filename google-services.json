@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:672619119522:android:f92ee753468bceb70428fb",
         "android_client_info": {
-          "package_name": "com.micromechanics.pasta"
+          "package_name": "de.micromechanics.pasta"
         }
       },
       "oauth_client": [

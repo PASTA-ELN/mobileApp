@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { View, StatusBar, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux'
-import { NativeRouter as Router, Route, Switch } from 'react-router-native';
+import { NativeRouter as Router, Route, Routes } from 'react-router-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import crashlytics from '@react-native-firebase/crashlytics';
 
@@ -87,13 +87,15 @@ class App extends Component<Props, State> {
           <View style={{ flex: 0.3 }}>
             <Header />
             <View style={{ height: '100%' }}>
-              <Switch>
-                <Route exact path='/'      render={(props)              => <Home   {...props}/>}/>
-                <Route path='/camera'      render={(props: CameraProps) => <Camera {...props}/>}/>
-                <Route path='/config'      render={(props: ConfigProps) => <Config {...props}/>}/>
-                <Route path='/data/:id'    render={(props: DataProps)   => <Data   {...props}/>}/>
-                <Route path='/table/:type' render={(props: TableProps)  => <Table  {...props}/>}/>
-              </Switch>
+              <Routes>
+                <Route path='/'>
+                  <Route index element={<Home />}/>
+                  <Route path='camera' element={<Camera />}/>
+                  <Route path='config'  element={<Config />}/>
+                  <Route path='data/:id' element={<Data   />}/>
+                  <Route path='table/:type' element={<Table  />}/>
+                </Route>
+              </Routes>
             </View>
           </View>
         </Router>

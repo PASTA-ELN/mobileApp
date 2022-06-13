@@ -25,7 +25,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.micromechanics.pasta</string>
+          <string>de.micromechanics.pasta</string>
         </array>
       </dict>
       <dict>

@@ -40,9 +40,6 @@ class Config extends Component<Props, State> {
       items: [],
       recent: 'loading...'
     }
-    this.setOpen = this.setOpen.bind(this);
-    this.setValue = this.setValue.bind(this);
-    this.setItems = this.setItems.bind(this);
     this.getRecent = this.getRecent.bind(this);
   }
   componentDidMount() {
@@ -61,11 +58,6 @@ class Config extends Component<Props, State> {
   addCreds(){
     
   }
-
-  //setter for DropdownPicker
-  setOpen(open:boolean) { this.setState({ open }); }
-  setValue(callback: (value:ValueType | ValueType[] | null) => ValueType | ValueType[] | null) { this.setState({ value: callback(this.state.value) }); }
-  setItems() { this.setState({ items: this.state.items }); }
 
   //toggle method for DarkMode switch
   toggleSwitch = async () => {
@@ -160,18 +152,6 @@ class Config extends Component<Props, State> {
               <View style={configStyle.innerBottom}>
                 <Text style={configStyle.text}>Current Database</Text>
                 <View style={configStyle.dropDownOuter}>
-                  <DropDownPicker
-                    open={this.state.open}
-                    value={this.state.value}
-                    items={this.state.items}
-                    setOpen={this.setOpen}
-                    setValue={this.setValue}
-                    setItems={this.setItems}
-                    onChangeValue={(value) => this.relogin(value)}
-                    placeholder={this.state.recent}
-                    style={configStyle.dropDown}
-                    dropDownContainerStyle={configStyle.dropDownContainer}
-                  />
                 </View>
               </View>
             </View>

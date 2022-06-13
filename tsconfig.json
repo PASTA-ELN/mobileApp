@@ -1,5 +1,5 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "./node_modules/expo/tsconfig.base",
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
@@ -23,6 +23,8 @@
     "jest.config.js"
   ],
   "include": [
-    "src"
+    "src",
+    "index.ts",
+    "App.tsx"
   ]
 }

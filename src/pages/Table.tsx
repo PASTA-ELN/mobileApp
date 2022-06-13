@@ -4,7 +4,6 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Alert, } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { withRouter } from 'react-router';
 
 import { db } from '../DBInteractions';
 import { TableProps } from '../types/routes';
@@ -32,7 +31,7 @@ type State = {
   goBack: boolean;
 } 
 
-class Table extends Component<Props, State> {
+export default class Table extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -174,5 +173,3 @@ class Table extends Component<Props, State> {
     )
   }
 }
-
-export default withRouter<TableProps, typeof Table>(Table);

@@ -1,4 +1,4 @@
-package com.micromechanics.pasta.newarchitecture;
+package de.micromechanics.pasta.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.micromechanics.pasta.BuildConfig;
-import com.micromechanics.pasta.newarchitecture.components.MainComponentsRegistry;
-import com.micromechanics.pasta.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import de.micromechanics.pasta.BuildConfig;
+import de.micromechanics.pasta.newarchitecture.components.MainComponentsRegistry;
+import de.micromechanics.pasta.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

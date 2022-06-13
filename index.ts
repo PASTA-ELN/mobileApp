@@ -1,3 +1,7 @@
+/**
+ * @file used by expo dev client
+ */
+
 import "expo-dev-client";
 import { registerRootComponent } from 'expo';
 

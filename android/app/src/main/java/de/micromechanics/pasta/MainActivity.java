@@ -1,4 +1,4 @@
-package com.micromechanics.pasta;
+package de.micromechanics.pasta;
 
 import android.os.Build;
 import android.os.Bundle;

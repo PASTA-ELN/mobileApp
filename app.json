@@ -25,7 +25,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.micromechanics.pasta",
+      "bundleIdentifier": "de.micromechanics.pasta",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
@@ -33,7 +33,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.micromechanics.pasta",
+      "package": "de.micromechanics.pasta",
       "googleServicesFile": "./google-services.json"
     },
     "web": {
