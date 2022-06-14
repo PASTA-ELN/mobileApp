@@ -14,8 +14,10 @@
       "backgroundColor": "#ffffff"
     },
     "plugins": [
-      "./node_modules/@react-native-firebase/app/app.plugin",
-      "./node_modules/@react-native-firebase/crashlytics/app.plugin"
+      [
+        "react-native-vision-camera",
+        {"cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera."}
+      ]
     ],
     "updates": {
       "fallbackToCacheTimeout": 0

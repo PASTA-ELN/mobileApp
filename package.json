@@ -4,19 +4,16 @@
   "private": true,
   "scripts": {
     "android": "expo run:android",
-    "android:expo": "expo start --android",
     "ios": "expo run:ios",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "metro": "react-native start",
     "start": "expo start --dev-client --tunnel",
-    "test": "jest",
-    "rebuild": "expo prebuild --clean --npm"
+    "rebuild": "expo prebuild --clean --npm",
+    "build:android": "eas build --profile development --platform android",
+    "build:ios": "eas build --profile development --platform ios",
+    "device": "eas device:create"
   },
   "dependencies": {
     "@expo/config-plugins": "^4.1.5",
     "@react-native-async-storage/async-storage": "^1.17.6",
-    "@react-native-firebase/app": "^14.11.0",
-    "@react-native-firebase/crashlytics": "^14.11.0",
     "@redux-devtools/extension": "^3.2.2",
     "@reduxjs/toolkit": "^1.8.2",
     "axios": "^0.27.2",
