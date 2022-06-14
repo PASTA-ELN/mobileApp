@@ -7,8 +7,9 @@ Comments and Attachments are currently in Development.
 
 ## Security
 
-The App needs to register a SHA1 hash to the registered Firebase account to connect to the Firebase servers. <br/>
-Signing is handled by expo.
+Codespace has some secrets that automatically log you into expo/eas and firebase.
+As Firebase requires its API tokens in file format, the install.sh script simply pastes the secrets into their files.
+Make sure the install script is run frequently to update the tokens.
 
 ## Commands
 

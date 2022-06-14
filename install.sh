@@ -16,4 +16,4 @@ fi
 echo $IOS_GOOGLE_SECRET > $AppleGoogleFile
 cp $AppleGoogleFile ./ios/Pasta/GoogleService-Info.plist
 
-#TODO expo/eas login ?
+#TODO Firebase admin SDK -> get API keys from server?

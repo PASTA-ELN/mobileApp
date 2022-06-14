@@ -10,7 +10,7 @@ import App from './src/App';
 import { makestore } from './src/store';
 
 /**
- * btoa and atob polyfills are broken in RN so we manually provide base64 encodeing
+ * btoa and atob polyfills are broken in RN so we manually provide base64 encoding
  */
 
 if (!global.btoa) {
