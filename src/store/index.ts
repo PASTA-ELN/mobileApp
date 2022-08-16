@@ -1,6 +1,5 @@
 import { AnyAction, configureStore, Store } from '@reduxjs/toolkit';
 
-import { loginMiddleware } from './Middleware'
 import reducer from './reducer';
 import type { InitialState } from '../types/store';
 
@@ -13,7 +12,7 @@ export function makestore(): Store<InitialState>{
       getDefaultMiddleware({
         serializableCheck: { warnAfter: 128 }
       })
-      .concat(loginMiddleware)
+      .concat()
   });
 
   return store;

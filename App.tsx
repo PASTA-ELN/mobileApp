@@ -1,10 +1,11 @@
 /**
  * @file used by expo run:[ios/android]
  */
-import React from 'react';
-import { Provider } from 'react-redux';
-import '@react-native-firebase/app';
-import {decode, encode} from 'base-64'
+import React, { Component } from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
+import { decode, encode } from 'base-64';
+import type { InitialProps } from 'expo/build/launch/withExpoRoot.types';
+import 'expo-dev-client';
 
 import App from './src/App';
 import { makestore } from './src/store';
@@ -12,7 +13,6 @@ import { makestore } from './src/store';
 /**
  * btoa and atob polyfills are broken in RN so we manually provide base64 encoding
  */
-
 if (!global.btoa) {
   global.btoa = encode;
 }
@@ -21,14 +21,24 @@ if (!global.atob) {
   global.atob = decode;
 }
 
+type Props = InitialProps & {};
+type State = {}
+
 /**
-* functional Component to Wrap Providers around the App
+* Component to Wrap Providers around the App
 * @returns App with attached Providers 
 */
-export default function _App() {
-  return (
-    <Provider store={makestore()}>
-      <App />
-    </Provider>
-  )
+export default class _App extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = {}
+  }
+
+  render(): React.ReactNode {
+    return (
+      <ReduxProvider store={makestore()}>
+          <App />
+      </ReduxProvider>
+    )
+  }
 }

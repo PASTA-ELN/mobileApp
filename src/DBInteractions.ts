@@ -5,7 +5,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { AxiosInstance, AxiosResponse } from 'axios';
-import type { Credential } from './types/Interactions';
+import type { Credential, CredentialWithConfigName } from './types/Interactions';
 
 export var db: AxiosInstance|undefined = undefined;
 
@@ -75,3 +75,46 @@ export async function getDocs(ID: string) {
     docIDs.length == 1 ? resolve(docIDs[0]) : reject('more than one entry for:');
   });
 };
+
+/** 
+ * function to test credentials before adding them 
+ */
+export async function testCredentials(credentials: CredentialWithConfigName): Promise<string> {
+  return new Promise<string>(async function (resolve, reject) {
+    await axios.get(
+      'http://' + credentials.credential.server + ':5984/' + credentials.credential.database + '/-ontology-',
+      {
+        auth: {
+          username: credentials.credential.username,
+          password: credentials.credential.password,
+        },
+        timeout: 2000
+      }
+    ).then(
+      (res) => { 
+        if(res.status === 200){
+          resolve('success')
+        } else {
+          reject(res.status);
+        }
+      }
+    ).catch(
+      (error) => {
+        const status = error.toJSON().status
+        if(status === 401){
+          resolve('invalid username/password');
+          return;
+        }
+        if(status === 404){
+          resolve('database not found');
+          return;
+        }
+        if(status === null){
+          resolve('no server connection');
+          return;
+        }
+        resolve('internal error')
+      }
+    );
+  });
+}

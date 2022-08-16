@@ -27,30 +27,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "de.micromechanics.pasta",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "bundleIdentifier": "de.micromechanics.pasta"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "de.micromechanics.pasta",
-      "googleServicesFile": "./google-services.json"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png",
-      "config": {
-        "firebase": {
-          "apiKey": "AIzaSyBHt1CLLZHDBYHS2erMeal93c69qEpXrxY",
-          "authDomain": "pasta-mobile-app.firebaseapp.com",
-          "projectId": "pasta-mobile-app",
-          "storageBucket": "pasta-mobile-app.appspot.com",
-          "messagingSenderId": "672619119522",
-          "appId": "1:672619119522:web:e4dd99ca83857f910428fb",
-          "measurementId": "G-P615QJ00VS"
-        }
-      }
+      "package": "de.micromechanics.pasta"
     }
   }
 }

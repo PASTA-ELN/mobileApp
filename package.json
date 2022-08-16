@@ -9,7 +9,12 @@
     "rebuild": "expo prebuild --clean --npm",
     "build:android": "eas build --profile development --platform android",
     "build:ios": "eas build --profile development --platform ios",
-    "device": "eas device:create"
+    "device": "eas device:create",
+    "expoGo": "expo start --tunnel",
+    "postinstall": "./scripts/postInstall.sh",
+    "eas-build-post-install": "./scripts/easPostInstall.sh",
+    "eas-build-pre-install": "./scripts/easPreInstall.sh",
+    "eas-build-pre-upload-artifacts": "./scripts/easPreUpload.sh"
   },
   "dependencies": {
     "@expo/config-plugins": "^4.1.5",
@@ -28,11 +33,12 @@
     "react-native-check-box": "^2.1.7",
     "react-native-dialog": "^9.2.2",
     "react-native-dropdown-picker": "^5.4.2",
-    "react-native-gesture-handler": "^1.10.3",
+    "react-native-gesture-handler": "~2.2.1",
     "react-native-modals": "^0.22.3",
     "react-native-paper": "^4.12.1",
     "react-native-permissions": "^3.3.1",
     "react-native-svg": "^12.3.0",
+    "react-native-toast-message": "^2.1.5",
     "react-native-vector-icons": "^9.1.0",
     "react-native-vision-camera": "^2.13.3",
     "react-native-web": "0.17.7",

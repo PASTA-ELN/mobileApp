@@ -6,7 +6,6 @@ import { View, StatusBar, SafeAreaView } from 'react-native';
 import { connect } from 'react-redux'
 import { NativeRouter as Router, Route, Routes } from 'react-router-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import crashlytics from '@react-native-firebase/crashlytics';
 
 import Camera from './pages/Camera';
 import Config from './pages/Config';
@@ -20,7 +19,6 @@ import { appStyle } from './style/app';
 import { CredentialWithConfigName } from './types/Interactions';
 import { InitialState } from './types/store';
 import Data from './pages/Data';
-import type { CameraProps, ConfigProps, DataProps, TableProps } from './types/routes';
 
 type Props = {
   isLoggedIn: boolean;
@@ -42,7 +40,6 @@ class App extends Component<Props, State> {
     //next line for testing if nothing is saved
     //AsyncStorage.multiRemove(['dataTypes','lastLogin','allCredentials']);
     this.init();
-    crashlytics().log('App mounted');
   }
 
   /** Get data types from AsyncStorage

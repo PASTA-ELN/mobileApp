@@ -13,7 +13,7 @@ cp $AndroidGoogleFile ./android/app/google-services.json
 if [ -f "$AppleGoogleFile" ];then
   rm $AppleGoogleFile
 fi
-echo $IOS_GOOGLE_SECRET > $AppleGoogleFile
+echo $APPLE_GOOGLE_SECRET > $AppleGoogleFile
 cp $AppleGoogleFile ./ios/Pasta/GoogleService-Info.plist
 
 #TODO Firebase admin SDK -> get API keys from server?

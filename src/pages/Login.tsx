@@ -6,9 +6,9 @@ import React, { Component } from 'react';
 import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 
 import LoginForm from '../components/LoginForm';
-import { dispatch } from '../store';
-import { logIn } from '../store/reducer/Login';
 import { CredentialWithConfigName } from '../types/Interactions';
+import { initDB, testCredentials } from '../DBInteractions'
+import Toast from 'react-native-toast-message';
 
 type Props = {}
 type State = {}
@@ -19,8 +19,18 @@ export default class Login extends Component<Props, State> {
     this.state = {}
   }
 
-  submit = (credential: CredentialWithConfigName) => {
-    dispatch(logIn(credential));
+  submit = async (credential: CredentialWithConfigName) => {
+    let res = await testCredentials(credential);
+    if(res === 'success'){
+      await initDB(credential.credential);
+      return Promise.resolve();
+    }
+    console.log(res);
+      Toast.show({
+      type: 'error',
+      text1: 'warning',
+      text2: res
+    })
   }
 
   /*********************
@@ -31,6 +41,7 @@ export default class Login extends Component<Props, State> {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ backgroundColor: 'white', height: '100%' }} >
           <LoginForm submit={this.submit}/>
+          <Toast/>
         </View>
       </TouchableWithoutFeedback>
     );

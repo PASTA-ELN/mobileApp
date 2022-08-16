@@ -7,9 +7,8 @@ Comments and Attachments are currently in Development.
 
 ## Security
 
-Codespace has some secrets that automatically log you into expo/eas and firebase.
+Codespace and Expo have some secrets that automatically log you into expo/eas and firebase.
 As Firebase requires its API tokens in file format, the install.sh script simply pastes the secrets into their files.
-Make sure the install script is run frequently to update the tokens.
 
 ## Commands
 

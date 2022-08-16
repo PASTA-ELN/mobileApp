@@ -1,7 +1,8 @@
 import React, { Component, createRef } from 'react';
-import { Image, Keyboard, Pressable, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, Image, Keyboard, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CheckBox from 'react-native-check-box';
 import Icon from 'react-native-vector-icons/Entypo';
+import Toast from 'react-native-toast-message';
 
 import { LoginFormStyle } from '../style';
 import { CredentialWithConfigName } from '../types/Interactions';
@@ -11,7 +12,6 @@ type Props = {
   submit: (credentials: CredentialWithConfigName) => void;
   buttonText?: string;
 }
-
 type State = {
   useNow:       boolean;
   hidePassword: boolean;
@@ -37,10 +37,10 @@ export default class LoginForm extends Component<Props, State> {
       hidePassword: true,
       scanQR:       false,
       configName:   'default',
-      username:     '',
-      password:     '',
-      server  :     '',
-      database:     ''
+      username:     'testUser',
+      password:     'D3poJxAGxpeTwa',
+      server  :     '134.94.32.11',
+      database:     'pasta_tutorial'
     }
   }
 
@@ -164,7 +164,6 @@ export default class LoginForm extends Component<Props, State> {
           <View style={LoginFormStyle.button}>
             <Button 
               onPress={this.submit}
-              style={LoginFormStyle.button}
               title={this.props.buttonText || 'login'} 
             />
           </View>
@@ -172,13 +171,4 @@ export default class LoginForm extends Component<Props, State> {
       </View>
     )
   }
-}
-
-function Button(props: any) {
-  const { onPress, title, style } = props;
-  return (
-    <Pressable style={style.button} onPress={onPress}>
-      <Text style={style.text}>{title}</Text>
-    </Pressable>
-  );
 }
