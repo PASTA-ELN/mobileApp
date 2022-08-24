@@ -125,3 +125,4 @@ dist/
 .vscode/
 package-lock.json
 private.*
+GoogleService-info.plist

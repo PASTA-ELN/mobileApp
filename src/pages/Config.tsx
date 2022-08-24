@@ -12,6 +12,9 @@ import { connect } from 'react-redux';
 import { InitialState } from '../types/store';
 import { CredentialWithConfigName } from '../types/Interactions';
 import { ConfigProps } from '../types/routes';
+import { nuke } from '../DBInteractions';
+import { dispatch } from '../store';
+import { logOut } from '../store/reducer/Login';
 
 type Props = ConfigProps & {
   allCredentials: CredentialWithConfigName[];
@@ -136,7 +139,7 @@ class Config extends Component<Props, State> {
                 <Ent name='chevron-thin-right' size={20} style={configStyle.icon} color={iconColor} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={configStyle.middle}>
+            <TouchableOpacity style={configStyle.middle} onPress={() => dispatch(logOut())}>
               <View style={redIcon}>
                 <Ent name='cross' size={25} color='#ffffff' style={misc.centered} />
               </View>

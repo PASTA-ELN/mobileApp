@@ -9,10 +9,17 @@ import type { CredentialWithConfigName } from './types/Interactions';
 /**
  * save Credentials to asyncstorage
  */
-export async function saveCredentials(credentials: CredentialWithConfigName[]){
-  return new Promise<void>(function(resolve, reject){
-    AsyncStorage.setItem('allCredentials', JSON.stringify(credentials))
-    .then(() => { resolve ();}, (res) => reject(res));
+export async function saveCredentials(newCredentials: CredentialWithConfigName){
+  return new Promise<void>(async function(resolve, reject){
+    const credentialString = await AsyncStorage.getItem('allCredentials');
+    if(credentialString === null){
+      reject('nothing found');
+      return;
+    }
+    const credentials: CredentialWithConfigName[] = JSON.parse(credentialString);
+    credentials.push(newCredentials);
+    await AsyncStorage.setItem('allCredentials', JSON.stringify(credentials));
+    await AsyncStorage.setItem('lastLogin', newCredentials.configName);
   })
 }
 

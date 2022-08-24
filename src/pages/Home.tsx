@@ -10,9 +10,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import { homeStyle } from '../style/index';
 
-type Props = {
-
-}
+type Props = {}
 
 type State = {
   dataTypes: string[];
@@ -63,7 +61,7 @@ export default class Home extends Component<Props, State> {
     
     const aList = this.state.dataTypes.map(i => {
       return (
-        <Link component={TouchableWithoutFeedback} to={'/table/' + i} key={i}>
+        <Link to={'/table/' + i} key={i}>
           <View style={homeStyle.inner}>
             <Text style={homeStyle.text}>{'  ' + i + 's'}</Text>
             <AntDesign name='edit' size={20} style={homeStyle.icon} color={iconColor} />

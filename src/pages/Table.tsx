@@ -4,13 +4,13 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Alert, } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { Params, useParams } from 'react-router-native';
 
 import { db } from '../DBInteractions';
-import { TableProps } from '../types/routes';
 import { misc, tableStyle } from '../style';
 
-type Props = TableProps & {
-
+type Props = {
+  params: Params;
 };
 
 type State = {
@@ -31,7 +31,7 @@ type State = {
   goBack: boolean;
 } 
 
-export default class Table extends Component<Props, State> {
+class Table extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -46,12 +46,12 @@ export default class Table extends Component<Props, State> {
   }
   
   async componentDidMount() {
-    const docLabel = this.props.match.params.type[0].toUpperCase() + this.props.match.params.type.slice(1) + 's';
+    const docLabel = this.props.params.type![0].toUpperCase() + this.props.params.type!.slice(1) + 's';
     //get headings for table
     var headings: typeof this.state.headings = [{name:'1'},{name:'2'},{name:'3'}];
     await db?.get('/-ontology-')
       .then((response) => {
-        headings = response.data[this.props.match.params.type].map((item: {name:string}) => {
+        headings = response.data[this.props.params.type!].map((item: {name:string}) => {
           if (item.name)
             return { name: item.name[0].toUpperCase() + item.name.slice(1) };
           return { name: '' };
@@ -62,7 +62,7 @@ export default class Table extends Component<Props, State> {
       });
     //get data for table
     var data:{id:string, value:string[]}[] = [];
-    await db?.get('_design/viewDocType/_view/' + this.props.match.params.type)
+    await db?.get('_design/viewDocType/_view/' + this.props.params.type)
       .then(response => {
         data = response.data.rows;
       })
@@ -117,17 +117,17 @@ export default class Table extends Component<Props, State> {
     const styles = [tableStyle.row, tableStyle.row1]
     const rows = this.state.table.map((item, index) => {
       return (
-        <TouchableOpacity style={styles[index % 2]} >
+        <TouchableOpacity style={styles[index % 2]} key={'touch_'+index+Math.random()}>
           {item.value.slice(0, 3).map((subitem:string) => {
             if (subitem)
               return (
-                <View key={JSON.stringify(subitem) + Math.random()} style={tableStyle.cell} >
-                  <Text>{subitem.length > 32 ? subitem.slice(subitem.length - 32) : subitem}</Text>
+                <View key={'view_'+index+Math.random()} style={tableStyle.cell}>
+                  <Text key={'text_'+index+Math.random()}>{subitem.length > 32 ? subitem.slice(subitem.length - 32) : subitem}</Text>
                 </View>
               )
             return (
               <View key={'empty' + Math.random()} style={tableStyle.cell} >
-                <Text>empty</Text>
+                <Text key={'text_'+index+Math.random()}>empty</Text>
               </View>)
           })}
         </TouchableOpacity>
@@ -172,4 +172,12 @@ export default class Table extends Component<Props, State> {
       </View>
     )
   }
+}
+
+//wrapper to get access to url parms... because native router is sh!t
+
+export default function withLocation(){
+  return(
+    <Table params={useParams()}/>
+  )
 }

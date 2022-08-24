@@ -46,12 +46,11 @@ export async function initDB(credentials:Credential) {
 async function getOntology(response:AxiosResponse<any>) {
   const ontology = response.data;
   AsyncStorage.setItem('ontology', JSON.stringify(ontology));
-  console.log(ontology);
-  const textTypes = ontology['-hierarchy-'];
-  if(!textTypes){
-    return;
-  }
-  const dataTypes = Object.keys(ontology).filter(i => (i[0] != '_' && i[0] != '-' && textTypes.indexOf(i) == -1));
+  const dataTypes = Object.keys(ontology).filter(element => {
+    if(!element.startsWith('_') && !element.startsWith('x')){
+      return element;
+    }
+  });
   await AsyncStorage.setItem('dataTypes', JSON.stringify(dataTypes));
 }
 
@@ -75,6 +74,11 @@ export async function getDocs(ID: string) {
     docIDs.length == 1 ? resolve(docIDs[0]) : reject('more than one entry for:');
   });
 };
+
+export async function nuke() {
+  await AsyncStorage.clear();
+  db = undefined;
+}
 
 /** 
  * function to test credentials before adding them 

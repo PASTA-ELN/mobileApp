@@ -24,16 +24,12 @@ type Props = {
   isLoggedIn: boolean;
 }
 
-type State = {
-  dataTypes: string[];
-}
+type State = {}
 
 class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      dataTypes: []
-    }
+    this.state = {}
   }
 
   componentDidMount() {
@@ -46,26 +42,19 @@ class App extends Component<Props, State> {
    * separate function since it has to be async-await
   */
   async init() {
-    var dataTypes = await AsyncStorage.getItem('dataTypes');
-    if (dataTypes){
-      this.setState({ dataTypes: JSON.parse(dataTypes) });
-    }
-
-    var _lastLogin = await AsyncStorage.getItem('lastLogin');
-    var lastLogin = _lastLogin != null ? JSON.parse(_lastLogin) : null;
+    var lastLogin = await AsyncStorage.getItem('lastLogin');
 
     var _allCredentials = await AsyncStorage.getItem('allCredentials');
-    var allCredentials: CredentialWithConfigName[] = _allCredentials != null ? JSON.parse(_allCredentials) : null;
-
-    if (lastLogin === null || allCredentials === null){
-      dispatch(logOut());
-    } else {
-      allCredentials.forEach((element) => {
-        if(element.configName === lastLogin){
-          dispatch(logIn(element));
-        }
-      })
+    if(_allCredentials === null){
+      return;
     }
+    var allCredentials: CredentialWithConfigName[] = JSON.parse(_allCredentials);
+
+    allCredentials.forEach(element => {
+      if(element.configName === lastLogin){
+        dispatch(logIn(element));
+      }
+    })
   }
 
   /*********************
@@ -74,7 +63,7 @@ class App extends Component<Props, State> {
   render() {
     //if not logged in;
     if (this.props.isLoggedIn === false)
-      return (<Login/>);
+      return (<Login />);
 
     //if logged in
     return (
@@ -102,7 +91,6 @@ class App extends Component<Props, State> {
 }
 
 //connect this component to the redux store
-
 function mapStateToProps(state: InitialState){
   const isLoggedIn = state.login.loggedIn;
   return { isLoggedIn: isLoggedIn };

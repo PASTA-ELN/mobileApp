@@ -1,4 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { nuke } from "../../DBInteractions";
+import { saveCredentials } from "../../LocalInteractions";
 
 import { CredentialWithConfigName } from "../../types/Interactions";
 import type { LoginState } from "../../types/store";
@@ -14,13 +17,16 @@ export const loginSlice = createSlice({
   initialState,
   reducers: {
     logIn: (state, action: PayloadAction<CredentialWithConfigName>) => {
+      saveCredentials(action.payload);
       state.loggedIn = true;
       state.usedConfigName = action.payload.configName
       state.usedConfig = action.payload.credential;
     },
     logOut: (state) => {
-      state = initialState;
-      //TODO cleanup on logOut
+      state.loggedIn = false;
+      state.usedConfigName = undefined;
+      state.usedConfig = undefined;
+      nuke();
     },
     reLogIn: (state, action: PayloadAction<CredentialWithConfigName>) => {
       //TODO kind  of dispatch logIn again
