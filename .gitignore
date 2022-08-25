@@ -126,3 +126,4 @@ dist/
 package-lock.json
 private.*
 GoogleService-info.plist
+google-services.json
