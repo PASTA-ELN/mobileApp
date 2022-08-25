@@ -6,6 +6,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { decode, encode } from 'base-64';
 import type { InitialProps } from 'expo/build/launch/withExpoRoot.types';
 import 'expo-dev-client';
+import 'react-native-reanimated'
 
 import App from './src/App';
 import { makestore } from './src/store';

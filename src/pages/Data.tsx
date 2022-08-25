@@ -9,14 +9,15 @@ import Fa from 'react-native-vector-icons/FontAwesome';
 import Ant from 'react-native-vector-icons/AntDesign';
 import { SvgXml } from 'react-native-svg';
 import Dialog from 'react-native-dialog';
+import { Params, useParams, useNavigate, NavigateFunction } from 'react-router-native';
 
 import CameraComponent from '../components/CameraComponent';
 import Details from '../components/Details';
 import { dataStyle } from '../style';
-import type { DataProps } from '../types/routes';
 
-type Props = DataProps & {
-
+type Props = {
+  params: Params;
+  navigate: NavigateFunction
 }
 
 type State = {
@@ -24,14 +25,15 @@ type State = {
   fileEnding: string;
   path: string;
   scanQR: boolean;
-  showDetails: string;
-
+  showDetails?: string;
+  showAttachments: boolean;
+  showIssues: boolean;
   dialogValue: string;
   openAlert: boolean;
   switchValue: boolean;
 }
 
-export default class Data extends Component<Props, State> {
+class Data extends Component<Props, State> {
   skipKeys = ['_id', '_rev', 'branch', 'client'];
 
   constructor(props: Props) {
@@ -41,7 +43,8 @@ export default class Data extends Component<Props, State> {
       fileEnding: '',
       path: '',
       scanQR: false,
-      showDetails: '',
+      showAttachments: false,
+      showIssues: false,
       //dialogBox attributes
       dialogValue: '',
       openAlert: false,
@@ -51,7 +54,7 @@ export default class Data extends Component<Props, State> {
 
   componentDidMount() {
     //docID have a letter, a '-' and 32 number-letters
-    db?.get(this.props.match.params.id)
+    db?.get(this.props.params.id!)
       .then(res => {
         const fileNameSplit: string[] = res.data['name'].split('.');
         if (!('attachment' in Object.keys(res.data))) {
@@ -59,7 +62,7 @@ export default class Data extends Component<Props, State> {
         }
         this.setState({ 
           data: res.data,
-          path: '/' + this.props.match.params.id + '/',
+          path: '/' + this.props.params.id + '/',
           fileEnding: fileNameSplit[fileNameSplit.length-1]
         });
       })
@@ -104,7 +107,7 @@ export default class Data extends Component<Props, State> {
       <View style={dataStyle.container}>
         <CameraComponent
           size='small'
-          onSucessCallback={async (data) => this.postQRUpdate(data)}
+          onSucessCallback={async (data) => this.postQRUpdate(data.rawValue!)}
           successMessage=''
         />
         <Button title='cancel' onPress={() => this.setState({ scanQR: false })} />
@@ -237,10 +240,16 @@ export default class Data extends Component<Props, State> {
     if (this.state.scanQR)
       return this.showQR();
 
-    if (this.state.showDetails != '') {
+    if (this.state.showDetails) {
       return (
         <Details name={this.state.showDetails} goBack={() => this.setState({ showDetails: '' })} />
       )
+    }
+    if (this.state.showAttachments){
+
+    }
+    if (this.state.showIssues){
+      
     }
 
     return (
@@ -248,7 +257,7 @@ export default class Data extends Component<Props, State> {
         {this.openAlert()}
         <View style={dataStyle.header}>
           <View style={dataStyle.leftContainer}>
-            <TouchableOpacity style={dataStyle.backButtonContainer} onPress={this.props.history.goBack}>
+            <TouchableOpacity style={dataStyle.backButtonContainer} onPress={() => this.props.navigate(-1)}>
               <Ion style={dataStyle.backIcon} name='ios-arrow-back-sharp' size={20} />
             </TouchableOpacity>
           </View>
@@ -269,4 +278,10 @@ export default class Data extends Component<Props, State> {
       </View>
     )
   }
+}
+
+export default function withRouter(){
+  return(
+    <Data params={useParams()} navigate={useNavigate()}/>
+  )
 }

@@ -4,13 +4,14 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Alert, } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { Params, useParams } from 'react-router-native';
+import { NavigateFunction, Params, useNavigate, useParams } from 'react-router-native';
 
 import { db } from '../DBInteractions';
 import { misc, tableStyle } from '../style';
 
 type Props = {
   params: Params;
+  navigate: NavigateFunction;
 };
 
 type State = {
@@ -117,7 +118,7 @@ class Table extends Component<Props, State> {
     const styles = [tableStyle.row, tableStyle.row1]
     const rows = this.state.table.map((item, index) => {
       return (
-        <TouchableOpacity style={styles[index % 2]} key={'touch_'+index+Math.random()}>
+        <TouchableOpacity style={styles[index % 2]} key={'touch_'+index+Math.random()} onPress={() => this.props.navigate(`/data/${item.id}`)}>
           {item.value.slice(0, 3).map((subitem:string) => {
             if (subitem)
               return (
@@ -178,6 +179,6 @@ class Table extends Component<Props, State> {
 
 export default function withLocation(){
   return(
-    <Table params={useParams()}/>
+    <Table params={useParams()} navigate={useNavigate()}/>
   )
 }

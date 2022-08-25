@@ -59,7 +59,7 @@ async function getOntology(response:AxiosResponse<any>) {
  * @param ID ID of Doc
  */
 export async function getDocs(ID: string) {
-  return new Promise(async function (resolve, reject) {
+  return new Promise<string>(async function (resolve, reject) {
     var docIDs;
     const res = await db?.get('_design/viewIdentify/_view/viewQR')
     docIDs = res?.data.rows.map((row:any) => {

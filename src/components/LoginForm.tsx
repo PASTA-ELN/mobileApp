@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 import { LoginFormStyle } from '../style';
 import { CredentialWithConfigName } from '../types/Interactions';
 import CameraComponent from './CameraComponent';
+import { Barcode } from 'vision-camera-code-scanner';
 
 type Props = {
   submit: (credentials: CredentialWithConfigName) => void;
@@ -39,7 +40,7 @@ export default class LoginForm extends Component<Props, State> {
       configName:   'default',
       username:     'testUser',
       password:     'D3poJxAGxpeTwa',
-      server  :     '134.94.32.11',
+      server  :     '134.94.32.112',
       database:     'pasta_tutorial'
     }
   }
@@ -66,8 +67,8 @@ export default class LoginForm extends Component<Props, State> {
     this.setState({hidePassword: !this.state.hidePassword})
   }
   /**callback for scanning QR code */
-  QRcallback = async (data: string) => {
-    var credentials: CredentialWithConfigName = JSON.parse(data);
+  QRcallback = async (data: Barcode) => {
+    var credentials: CredentialWithConfigName = JSON.parse(data.rawValue!);
     if (credentials.credential.server.indexOf(':') > -1)
       credentials.credential.server = credentials.credential.server.slice(0, credentials.credential.server.length - 5)
     if (credentials.credential.server.slice(0, 3) == 'htt')
