@@ -9,21 +9,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Camera from './pages/Camera';
 import Config from './pages/Config';
-import Header from './components/Header';
+import Data from './pages/Data';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Table from './pages/Table';
+import Header from './components/Header';
 import { dispatch } from './store';
 import { logIn, logOut } from './store/reducer/Login';
 import { appStyle } from './style/app';
 import { CredentialWithConfigName } from './types/Interactions';
 import { InitialState } from './types/store';
-import Data from './pages/Data';
+import { expo } from '../app.json';
+
+global.version = expo.version;
 
 type Props = {
   isLoggedIn: boolean;
 }
-
 type State = {}
 
 class App extends Component<Props, State> {

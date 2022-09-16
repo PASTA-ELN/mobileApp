@@ -5,6 +5,6 @@ import { StyleSheet } from "react-native";
  ***************************/
 export const loginStyle = StyleSheet.create({
   versionText:{
-    paddingLeft: 20
+    paddingLeft: 30
   }
 });

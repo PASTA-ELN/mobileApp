@@ -43,7 +43,7 @@ export default class Login extends Component<Props, State> {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ backgroundColor: 'white', height: '100%' }} >
-          <View style={{height: '97%'}}>
+          <View style={{height: '95%'}}>
             <LoginForm submit={this.submit} />
           </View>
           <Text style={loginStyle.versionText}>Version {global.version}</Text>

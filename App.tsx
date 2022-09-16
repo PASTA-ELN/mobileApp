@@ -22,8 +22,6 @@ if (!global.atob) {
   global.atob = decode;
 }
 
-global.version = '1.0.0';
-
 type Props = InitialProps & {};
 type State = {}
 
