@@ -67,5 +67,11 @@ export const LoginFormStyle = StyleSheet.create({
     marginTop: 'auto',
     marginRight: 0,
     marginLeft: 'auto'
+  },
+  cameraWrapper: {
+    height: '95%',
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'center'
   }
 })

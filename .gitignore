@@ -123,7 +123,8 @@ dist/
 
 # misc
 .vscode/
-package-lock.json
 private.*
+credentials.png
 GoogleService-info.plist
 google-services.json
+eas-api-key.json

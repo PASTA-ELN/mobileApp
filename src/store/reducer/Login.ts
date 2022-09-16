@@ -19,8 +19,8 @@ export const loginSlice = createSlice({
     logIn: (state, action: PayloadAction<CredentialWithConfigName>) => {
       saveCredentials(action.payload);
       state.loggedIn = true;
-      state.usedConfigName = action.payload.configName
-      state.usedConfig = action.payload.credential;
+      state.usedConfigName = action.payload.configname
+      state.usedConfig = action.payload.credentials;
     },
     logOut: (state) => {
       state.loggedIn = false;

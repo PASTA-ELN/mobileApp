@@ -124,7 +124,7 @@ import { bordercolor, mainColor, SCREEN_HEIGHT, textColor } from "../consts";
     fontWeight: 'bold',
     marginBottom: 10,
     marginTop: 10,
-    color: textColor
+    color: mainColor
   },
   subText:{
     flexDirection:'row'

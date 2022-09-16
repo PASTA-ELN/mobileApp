@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import { View, Text, ScrollView, TouchableWithoutFeedback } from 'react-native';
-import { Link } from 'react-router-native';
+import { Link, Navigate } from 'react-router-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -56,6 +56,8 @@ export default class Home extends Component<Props, State> {
     //if data is not fully loaded: prevent crash
     if (!this.state.dataTypes)
       return (<View/>);
+
+    return <Navigate to='/data/m-006c9a52d74d3e248ed8216266a2cccf'/>
 
     const iconColor = '#000000';
     

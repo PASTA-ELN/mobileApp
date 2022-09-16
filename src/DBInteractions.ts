@@ -86,11 +86,11 @@ export async function nuke() {
 export async function testCredentials(credentials: CredentialWithConfigName): Promise<string> {
   return new Promise<string>(async function (resolve, reject) {
     await axios.get(
-      'http://' + credentials.credential.server + ':5984/' + credentials.credential.database + '/-ontology-',
+      'http://' + credentials.credentials.server + ':5984/' + credentials.credentials.database + '/-ontology-',
       {
         auth: {
-          username: credentials.credential.username,
-          password: credentials.credential.password,
+          username: credentials.credentials.username,
+          password: credentials.credentials.password,
         },
         timeout: 2000
       }

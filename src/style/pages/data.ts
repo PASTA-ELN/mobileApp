@@ -11,6 +11,7 @@ import { bordercolor, mainColor, SCREEN_HEIGHT, SCREEN_WIDTH, textColor } from "
   },
   header: {
     flexDirection: 'row',
+    height: '10%',
     paddingTop: 2.5,
     paddingBottom: 2.5
   },
@@ -43,13 +44,16 @@ import { bordercolor, mainColor, SCREEN_HEIGHT, SCREEN_WIDTH, textColor } from "
     marginBottom: 'auto'
   },
   backButtonContainer: {
+    height: '100%',
+    display: 'flex',
     flexDirection: 'row',
     marginLeft: 5,
-    marginTop: 'auto',
-    marginBottom: 'auto'
+    alignItems: 'center'
   },
   goBackText: {
-    fontSize: 20
+    fontSize: 20,
+    fontWeight: '500',
+    color: mainColor
   },
   ButtonContainer: {
     flexDirection: 'row',
@@ -79,11 +83,12 @@ import { bordercolor, mainColor, SCREEN_HEIGHT, SCREEN_WIDTH, textColor } from "
     marginRight: 5
   },
   dataField: {
-    height: '100%',
+    height: '90%',
     backgroundColor: mainColor,
     borderTopColor: bordercolor,
     borderTopWidth: 1,
-    padding: 10
+    paddingLeft: 10,
+    paddingRight: 10
   },
   basicEntry: {
     minHeight: 20,
@@ -94,6 +99,7 @@ import { bordercolor, mainColor, SCREEN_HEIGHT, SCREEN_WIDTH, textColor } from "
     width: '100%',
     height: SCREEN_WIDTH - 20
   },
+  svg: {},
   markdown: {
     maxHeight: `${SCREEN_WIDTH - 20}`,
     maxWidth: `${SCREEN_WIDTH - 20}`

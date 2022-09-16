@@ -6,6 +6,6 @@ export type Credential = {
 }
 
 export type CredentialWithConfigName = {
-  configName: string;
-  credential: Credential
+  configname: string;
+  credentials: Credential
 }

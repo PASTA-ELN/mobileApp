@@ -3,14 +3,15 @@
  * props: loggedIn callback function upon success
  */
 import React, { Component } from 'react';
-import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import LoginForm from '../components/LoginForm';
 import { CredentialWithConfigName } from '../types/Interactions';
 import { initDB, testCredentials } from '../DBInteractions'
-import Toast from 'react-native-toast-message';
 import { dispatch } from '../store';
 import { logIn } from '../store/reducer/Login';
+import { loginStyle } from '../style/pages/login';
 
 type Props = {}
 type State = {}
@@ -24,11 +25,10 @@ export default class Login extends Component<Props, State> {
   submit = async (credential: CredentialWithConfigName) => {
     let res = await testCredentials(credential);
     if(res === 'success'){
-      await initDB(credential.credential);
+      await initDB(credential.credentials);
       dispatch(logIn(credential));
       return Promise.resolve();
     }
-    console.log(res);
     Toast.show({
       type: 'error',
       text1: 'warning',
@@ -43,7 +43,10 @@ export default class Login extends Component<Props, State> {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ backgroundColor: 'white', height: '100%' }} >
-          <LoginForm submit={this.submit}/>
+          <View style={{height: '97%'}}>
+            <LoginForm submit={this.submit} />
+          </View>
+          <Text style={loginStyle.versionText}>Version {global.version}</Text>
           <Toast/>
         </View>
       </TouchableWithoutFeedback>

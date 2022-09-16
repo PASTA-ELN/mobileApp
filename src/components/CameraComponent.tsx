@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react'
-import { Alert, Image, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { runOnJS } from 'react-native-reanimated';
 import { Text } from 'react-native-svg';
 import { Camera, CameraDevice, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
@@ -50,15 +50,26 @@ export default function CameraComponent({
   if(barcode && !lock){
     setLock(true);
     Alert.alert(
-      `Read: ${barcode.displayValue}`,
       successMessage,
+      `Read: ${barcode.displayValue}`,
       [
         {
           text: 'OK',
-          onPress:() => onSucessCallback(barcode)
+          onPress:() => {
+            setLock(false);
+            onSucessCallback(barcode);
+          }
         }
       ]);
   }
+  
+  const camera = size === 'full'? {
+    height: SCREEN_HEIGHT
+  }:{
+    height: SCREEN_WIDTH,
+    marginBottom: 'auto',
+    marginTop: 'auto'
+  };
     
   return device != null && hasPermission ?
   (
@@ -66,7 +77,7 @@ export default function CameraComponent({
       <Camera 
         device={device}
         isActive={true}
-        style={cameraStyle.camera}
+        style={camera}
         torch={torch}
         frameProcessor={frameProcessor}
         frameProcessorFps={5}

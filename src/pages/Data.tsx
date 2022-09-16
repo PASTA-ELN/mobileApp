@@ -13,16 +13,19 @@ import { Params, useParams, useNavigate, NavigateFunction } from 'react-router-n
 
 import CameraComponent from '../components/CameraComponent';
 import Details from '../components/Details';
-import { dataStyle } from '../style';
+import { dataStyle, mainColor } from '../style';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
   params: Params;
-  navigate: NavigateFunction
+  navigate: NavigateFunction;
 }
 
 type State = {
   data: any;
   fileEnding: string;
+  goBackText: string;
+  docType: string;
   path: string;
   scanQR: boolean;
   showDetails?: string;
@@ -41,6 +44,8 @@ class Data extends Component<Props, State> {
     this.state = {
       data: {},
       fileEnding: '',
+      goBackText: '',
+      docType: '',
       path: '',
       scanQR: false,
       showAttachments: false,
@@ -54,19 +59,35 @@ class Data extends Component<Props, State> {
 
   componentDidMount() {
     //docID have a letter, a '-' and 32 number-letters
-    db?.get(this.props.params.id!)
+    this.fetchData(this.props.params.id!)
       .then(res => {
-        const fileNameSplit: string[] = res.data['name'].split('.');
+        //@ts-ignore -_-
+        this.setState(res);
+      })
+      .catch((error) => { Alert.alert('Error', error) });
+  }
+
+  async fetchData(id: string){
+    return new Promise(async function(resolve, reject){
+      setTimeout(()=>reject('timeout'), 10000);
+      const res = await db?.get(id);
+      if(!res){
+        reject('failed to fetch data');
+        return;
+      }
+      const fileNameSplit: string[] = res.data['name'].split('.');
         if (!('attachment' in Object.keys(res.data))) {
           res.data['attachment'] = {}
         }
-        this.setState({ 
+        const docType = res.data['-type'][0];
+        resolve({ 
           data: res.data,
-          path: '/' + this.props.params.id + '/',
-          fileEnding: fileNameSplit[fileNameSplit.length-1]
+          path: '/' + id + '/',
+          fileEnding: fileNameSplit[fileNameSplit.length-1],
+          goBackText: docType.substring(0,1).toUpperCase() + docType.substring(1)+'s',
+          docType: docType
         });
-      })
-      .catch((error) => { Alert.alert('Error', error) });
+    })
   }
 
   postQRUpdate = (newQRCode: string) => {
@@ -145,12 +166,12 @@ class Data extends Component<Props, State> {
    * @returns <View>LIST<View>
   */
   renderData = () => {
-    var image;
+    var image;    
     if ('image' in this.state.data) {
       if (this.state.data['image'].substring(0, 14) == 'data:image/jpg') {
         image = <Image source={{ uri: this.state.data['image'] }} style={dataStyle.image} />;
       } else if (this.state.data['image'].substring(0, 4) == '<?xm') {
-        image = <SvgXml xml={this.state.data['image']} width='100%' />
+        image = <SvgXml xml={this.state.data['image']} width='100%' style={dataStyle.svg}/>
       }
     } else {
       image = null;
@@ -166,7 +187,6 @@ class Data extends Component<Props, State> {
       //different method for displaying images
       if (key == 'image' || key == '-client' || key == '-branch' || key == '-user')
         return null
-
 
       //markdown content
       if (key == 'content' && this.state.fileEnding === 'md')
@@ -184,21 +204,19 @@ class Data extends Component<Props, State> {
         )
       }
 
-      /*
       //attachments
       if(key == '-attachment'){
         AsyncStorage.getItem('ontology').then(res => {
-          if(this.props.docType === undefined)
+          if(this.state.docType === undefined)
             return;
-          const docType = JSON.parse(res!)[this.props.docType];
+          const docType = JSON.parse(res!)[this.state.docType];
           console.log(Object.keys(docType));
         })
         return;
       }
-      */
 
       //JSON objects
-      if (this.state.data[key].constructor === {}.constructor) {
+      if (typeof this.state.data[key].constructor === 'object') {
         var tmp = Object.keys(this.state.data[key]).map((key1) => {
           return key1 + ':' + this.state.data[key][key1];
         });
@@ -212,8 +230,14 @@ class Data extends Component<Props, State> {
       }
 
       //Empty Arrays
-      if (this.state.data[key].constructor == [].constructor && !this.state.data[key][0])
-        return null;
+      if (Array.isArray(this.state.data[key])){
+        if(!this.state.data[key]){
+          return null
+        }
+        this.state.data[key].forEach((element:any) => {
+          
+        })
+      }
 
       //everything else
       return (
@@ -258,7 +282,8 @@ class Data extends Component<Props, State> {
         <View style={dataStyle.header}>
           <View style={dataStyle.leftContainer}>
             <TouchableOpacity style={dataStyle.backButtonContainer} onPress={() => this.props.navigate(-1)}>
-              <Ion style={dataStyle.backIcon} name='ios-arrow-back-sharp' size={20} />
+              <Ion style={dataStyle.backIcon} name='ios-arrow-back-sharp' size={30} color={mainColor}/>
+              <Text style={dataStyle.goBackText}>{this.state.goBackText}</Text>
             </TouchableOpacity>
           </View>
           <View style={dataStyle.rightContainer}>

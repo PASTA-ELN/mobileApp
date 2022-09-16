@@ -25,6 +25,7 @@
   "include": [
     "src",
     "index.ts",
-    "App.tsx"
+    "App.tsx", 
+    "enviroments.d.ts"    
   ]
 }

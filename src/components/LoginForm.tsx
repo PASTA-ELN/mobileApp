@@ -3,11 +3,11 @@ import { Button, Image, Keyboard, Text, TextInput, TouchableOpacity, View } from
 import CheckBox from 'react-native-check-box';
 import Icon from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-toast-message';
+import { Barcode } from 'vision-camera-code-scanner';
 
 import { LoginFormStyle } from '../style';
 import { CredentialWithConfigName } from '../types/Interactions';
 import CameraComponent from './CameraComponent';
-import { Barcode } from 'vision-camera-code-scanner';
 
 type Props = {
   submit: (credentials: CredentialWithConfigName) => void;
@@ -17,7 +17,7 @@ type State = {
   useNow:       boolean;
   hidePassword: boolean;
   scanQR:       boolean;
-  configName:   string;
+  configname:   string;
   username:     string;
   password:     string;
   server:       string;
@@ -37,11 +37,11 @@ export default class LoginForm extends Component<Props, State> {
       useNow:       true,
       hidePassword: true,
       scanQR:       false,
-      configName:   'default',
-      username:     'testUser',
-      password:     'D3poJxAGxpeTwa',
-      server  :     '134.94.32.112',
-      database:     'pasta_tutorial'
+      configname:   'default',
+      username:     '',
+      password:     '',
+      server  :     '',
+      database:     ''
     }
   }
 
@@ -49,12 +49,12 @@ export default class LoginForm extends Component<Props, State> {
   changePassword   = (value: string) => {this.setState({password: value})}
   changeServer     = (value: string) => {this.setState({server: value})}
   changeDatabase   = (value: string) => {this.setState({database: value})}
-  changeConfigname = (value: string) => {this.setState({configName: value})}
+  changeConfigname = (value: string) => {this.setState({configname: value})}
   check            = ()              => {this.setState({useNow: !this.state.useNow})}
   submit           = ()              => {
     const credential: CredentialWithConfigName = {
-      configName: this.state.configName,
-      credential: {
+      configname: this.state.configname,
+      credentials: {
         username: this.state.username,
         password: this.state.password,
         server  : this.state.server,
@@ -69,23 +69,28 @@ export default class LoginForm extends Component<Props, State> {
   /**callback for scanning QR code */
   QRcallback = async (data: Barcode) => {
     var credentials: CredentialWithConfigName = JSON.parse(data.rawValue!);
-    if (credentials.credential.server.indexOf(':') > -1)
-      credentials.credential.server = credentials.credential.server.slice(0, credentials.credential.server.length - 5)
-    if (credentials.credential.server.slice(0, 3) == 'htt')
-      credentials.credential.server = credentials.credential.server.slice(7);
+    if (credentials.credentials.server.indexOf(':') > -1)
+      credentials.credentials.server = credentials.credentials.server.slice(0, credentials.credentials.server.length - 5)
+    if (credentials.credentials.server.slice(0, 3) == 'htt')
+      credentials.credentials.server = credentials.credentials.server.slice(7);
     this.setState({
-      configName: credentials.configName,
-      username: credentials.credential.username,
-      password: credentials.credential.password,
-      server:   credentials.credential.server,
-      database: credentials.credential.database
+      configname: credentials.configname,
+      username: credentials.credentials.username,
+      password: credentials.credentials.password,
+      server:   credentials.credentials.server,
+      database: credentials.credentials.database,
+      scanQR: false
     })
     return Promise.resolve();
   }
 
   render() {
     if(this.state.scanQR)
-      return <CameraComponent onSucessCallback={this.QRcallback} successMessage='' size='small'/>
+      return (
+        <TouchableOpacity style={LoginFormStyle.cameraWrapper} onPress={() => this.setState({scanQR: false})}>
+          <CameraComponent onSucessCallback={this.QRcallback} successMessage='' size='small'/>
+        </TouchableOpacity>
+      )
     return (
       <View style={LoginFormStyle.outer}>
         <View style={{ flexDirection: 'row' }}>
@@ -153,7 +158,7 @@ export default class LoginForm extends Component<Props, State> {
           placeholder='configuration name' 
           ref={this.configInput}
           style={LoginFormStyle.input}
-          value={this.state.configName}
+          value={this.state.configname}
         />
         <View style={{ flexDirection: 'row', flex: 1 }}>
           <CheckBox

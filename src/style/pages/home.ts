@@ -12,7 +12,7 @@ import { accent, bordercolor, mainColor, SCREEN_HEIGHT, textColor } from "../con
     marginBottom: 10,
     marginTop: 10,
     marginLeft: '5%',
-    color: textColor
+    color: accent
   },
   container: {
     height: SCREEN_HEIGHT * 0.9,
@@ -64,5 +64,6 @@ import { accent, bordercolor, mainColor, SCREEN_HEIGHT, textColor } from "../con
     marginBottom: 'auto',
     marginLeft: 'auto',
     marginRight: '7%',
+    color: accent
   }
 });

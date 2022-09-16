@@ -16,7 +16,9 @@
     "plugins": [
       [
         "react-native-vision-camera",
-        {"cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera."}
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera."
+        }
       ]
     ],
     "updates": {
@@ -27,14 +29,25 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "de.micromechanics.pasta"
+      "bundleIdentifier": "de.micromechanics.pasta",
+      "infoPlist": {
+        "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "de.micromechanics.pasta"
+      "package": "de.micromechanics.pasta",
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eac174ae-81ed-437e-a814-eda9d8887c6b"
+      }
     }
   }
 }

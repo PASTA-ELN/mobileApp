@@ -6,15 +6,12 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "start": "expo start --dev-client --tunnel",
+    "dev": "expo start --dev-client --localhost",
     "rebuild": "expo prebuild --clean --npm",
     "build:android": "eas build --profile development --platform android",
     "build:ios": "eas build --profile development --platform ios",
     "device": "eas device:create",
-    "expoGo": "expo start --tunnel",
-    "postinstall": "./scripts/postInstall.sh",
-    "eas-build-post-install": "./scripts/easPostInstall.sh",
-    "eas-build-pre-install": "./scripts/easPreInstall.sh",
-    "eas-build-pre-upload-artifacts": "./scripts/easPreUpload.sh"
+    "expoGo": "expo start --tunnel"
   },
   "dependencies": {
     "@expo/config-plugins": "^4.1.5",

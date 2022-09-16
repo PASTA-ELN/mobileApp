@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { textColor } from "./consts";
+import { mainColor, textColor } from "./consts";
 
 /*************************************
  * Stylesheet for miscellaneous items*
@@ -12,7 +12,7 @@ import { textColor } from "./consts";
     marginBottom: 10,
     marginTop: 10,
     marginLeft: 10,
-    color: textColor
+    color: mainColor
   },
   centered: {
     marginTop: 'auto',

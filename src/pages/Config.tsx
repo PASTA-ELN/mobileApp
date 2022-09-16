@@ -11,15 +11,13 @@ import { configStyle, misc } from '../style/index';
 import { connect } from 'react-redux';
 import { InitialState } from '../types/store';
 import { CredentialWithConfigName } from '../types/Interactions';
-import { ConfigProps } from '../types/routes';
-import { nuke } from '../DBInteractions';
 import { dispatch } from '../store';
 import { logOut } from '../store/reducer/Login';
 
-type Props = ConfigProps & {
+type Props = {
   allCredentials: CredentialWithConfigName[];
-  username?: string;
-  configName?: string;
+  username: string;
+  configname: string;
 }
 
 type State = {
@@ -51,20 +49,26 @@ class Config extends Component<Props, State> {
 
   async getRecent() {
     var tmp = await AsyncStorage.getItem('lastLogin');
-    this.setState({ recent: JSON.parse(tmp!).configName });
+    this.setState({ recent: tmp! });
   }
 
   relogin(value: string | number | boolean | ValueType[] | null): void {
     throw new Error('Method not implemented.');
   }
 
-  addCreds(){
-    
+  logOut(){
+    Alert.alert(
+      'Warning',
+      'this will delete all user data from the device and send you back to the login screen',
+      [
+        { text: 'cancel'},
+        { text: 'proceed', onPress: () => dispatch(logOut())}
+      ]
+    )
   }
 
-  //toggle method for DarkMode switch
-  toggleSwitch = async () => {
-    Alert.alert('Warning','WIP')
+  addCreds(){
+    
   }
 
   //Alert for opening help page
@@ -89,9 +93,20 @@ class Config extends Component<Props, State> {
   adjustTextsize() {
     Alert.alert('Warning','still in alpha\nwork in progress');
   }
-  adjust() {
-    //alert('still in alpha\nwork in progress');
-    throw new Error('test12345');
+  error() {
+    Alert.alert(
+      'Warning',
+      'this will throw an uncaught error, which will probably cause the app to close',
+      [
+        {
+          text: 'abort'
+        },
+        {
+          text: 'proceed',
+          onPress: () => {throw new Error('test12345')}
+        }
+      ]
+      )
   }
 
   /*********************
@@ -139,12 +154,12 @@ class Config extends Component<Props, State> {
                 <Ent name='chevron-thin-right' size={20} style={configStyle.icon} color={iconColor} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={configStyle.middle} onPress={() => dispatch(logOut())}>
+            <TouchableOpacity style={configStyle.middle} onPress={this.logOut}>
               <View style={redIcon}>
                 <Ent name='cross' size={25} color='#ffffff' style={misc.centered} />
               </View>
               <View style={configStyle.inner}>
-                <Text style={configStyle.text}>Remove Database</Text>
+                <Text style={configStyle.text}>log out</Text>
                 <Ent name='chevron-thin-right' size={20} style={configStyle.icon} color={iconColor} />
               </View>
             </TouchableOpacity>
@@ -160,20 +175,6 @@ class Config extends Component<Props, State> {
             </View>
           </View>
           <View style={{ ...configStyle.outer, zIndex: -1 }}>
-            <View style={configStyle.middle}>
-              <View style={orangeIcon}>
-                <Ent name='light-bulb' size={18} color='#ffffff' style={misc.centered} />
-              </View>
-              <View style={configStyle.inner}>
-                <Text style={configStyle.text}>Dark mode (requires reload) (WIP)</Text>
-                <View style={{ marginTop: 'auto', marginBottom: 'auto', marginLeft: 'auto', marginRight: 10 }}>
-                  <Switch
-                    value={this.state.darkMode}
-                    onValueChange={this.toggleSwitch}
-                  />
-                </View>
-              </View>
-            </View>
             <TouchableOpacity style={configStyle.middle} onPress={() => this.adjustScreensize()}>
               <View style={configStyle.iconFrame}>
                 <Ent name='check' size={21} color='#ffffff' style={misc.centered} />
@@ -192,12 +193,12 @@ class Config extends Component<Props, State> {
                 <Ent name='chevron-thin-right' size={20} style={configStyle.icon} color={iconColor} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={configStyle.middle} onPress={() => this.adjust()}>
+            <TouchableOpacity style={configStyle.middle} onPress={() => this.error()}>
               <View style={configStyle.iconFrame}>
                 <Ent name='check' size={21} color='#ffffff' style={misc.centered} />
               </View>
               <View style={configStyle.inner}>
-                <Text style={configStyle.text}>???(WIP)</Text>
+                <Text style={configStyle.text}>test error</Text>
                 <Ent name='chevron-thin-right' size={20} style={configStyle.icon} color={iconColor} />
               </View>
             </TouchableOpacity>
@@ -219,9 +220,9 @@ class Config extends Component<Props, State> {
 
 function mapStateToProps(state: InitialState){
   const allCredentials = state.configuration.allCredentials;
-  const username = state.login.usedConfig?.username;
-  const configName = state.login.usedConfigName;
-  return { allCredentials: allCredentials, username: username, configName: configName }
+  const username = state.login.usedConfig?.username!;
+  const configname = state.login.usedConfigName!;
+  return { allCredentials: allCredentials, username: username, configname: configname }
 }
 
 export default connect(mapStateToProps)(Config);

@@ -51,15 +51,15 @@ class App extends Component<Props, State> {
     var allCredentials: CredentialWithConfigName[] = JSON.parse(_allCredentials);
 
     allCredentials.forEach(element => {
-      if(element.configName === lastLogin){
+      if(element.configname === lastLogin){
         dispatch(logIn(element));
       }
     })
   }
 
-  /*********************
-   * The Render Method *
-   *********************/  
+  /************************************************************************************************
+   * The Render Method                                                                            *
+   ************************************************************************************************/
   render() {
     //if not logged in;
     if (this.props.isLoggedIn === false)
@@ -78,7 +78,7 @@ class App extends Component<Props, State> {
                   <Route index element={<Home />}/>
                   <Route path='camera' element={<Camera />}/>
                   <Route path='config'  element={<Config />}/>
-                  <Route path='data/:id' element={<Data   />}/>
+                  <Route path='data/:id' element={<Data  />}/>
                   <Route path='table/:type' element={<Table  />}/>
                 </Route>
               </Routes>

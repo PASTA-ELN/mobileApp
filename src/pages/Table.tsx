@@ -7,7 +7,9 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { NavigateFunction, Params, useNavigate, useParams } from 'react-router-native';
 
 import { db } from '../DBInteractions';
-import { misc, tableStyle } from '../style';
+import { dispatch } from '../store';
+import { logOut } from '../store/reducer/Login';
+import { mainColor, misc, tableStyle } from '../style';
 
 type Props = {
   params: Params;
@@ -15,22 +17,22 @@ type Props = {
 };
 
 type State = {
-  table: {value: string[], id: string}[];
+  table: { value: string[], id: string }[];
   docLabel: string;
   showData: string;
   headings: [
-    {name: string},
-    {name: string},
-    {name: string}
+    { name: string },
+    { name: string },
+    { name: string }
   ];
   coloums: [
-    'sort-amount-up'|'sort-amount-down'|'bars',
-    'sort-amount-up'|'sort-amount-down'|'bars',
-    'sort-amount-up'|'sort-amount-down'|'bars'
+    'sort-amount-up' | 'sort-amount-down' | 'bars',
+    'sort-amount-up' | 'sort-amount-down' | 'bars',
+    'sort-amount-up' | 'sort-amount-down' | 'bars'
   ];
   fileEnding: string;
   goBack: boolean;
-} 
+}
 
 class Table extends Component<Props, State> {
   constructor(props: Props) {
@@ -45,44 +47,33 @@ class Table extends Component<Props, State> {
       goBack: false
     };
   }
-  
-  async componentDidMount() {
-    const docLabel = this.props.params.type![0].toUpperCase() + this.props.params.type!.slice(1) + 's';
-    //get headings for table
-    var headings: typeof this.state.headings = [{name:'1'},{name:'2'},{name:'3'}];
-    await db?.get('/-ontology-')
-      .then((response) => {
-        headings = response.data[this.props.params.type!].map((item: {name:string}) => {
-          if (item.name)
-            return { name: item.name[0].toUpperCase() + item.name.slice(1) };
-          return { name: '' };
-        });
-      })
-      .catch((error) => {
-        Alert.alert('Error',error);
-      });
-    //get data for table
-    var data:{id:string, value:string[]}[] = [];
-    await db?.get('_design/viewDocType/_view/' + this.props.params.type)
-      .then(response => {
-        data = response.data.rows;
-      })
-      .catch((error) => {
-        data = [{id: 'error', value:['Error']}];
-        Alert.alert('Error occured!', error.message, [
-          {
-            text: 'dismiss',
-            onPress: () => this.setState({ goBack: true })
-          }
-        ])
-      });
 
-    //single setState for only one reload
-    this.setState({
-      table: data,
-      docLabel: docLabel,
-      headings: headings
-    });
+  async componentDidMount() {
+    try{
+      const docLabel = this.props.params.type![0].toUpperCase() + this.props.params.type!.slice(1) + 's';
+      const response = await db?.get('/-ontology-')!;
+      const headings = response.data[this.props.params.type!].map((item: { name: string }) => {
+        if (item.name)
+          return { name: item.name[0].toUpperCase() + item.name.slice(1) };
+        return { name: '' };
+      });
+    
+      const data = (await db?.get('_design/viewDocType/_view/' + this.props.params.type))?.data.rows
+      this.setState({
+        table: data,
+        docLabel: docLabel,
+        headings: headings
+      });
+    }
+    catch(error) {
+      if(!db){
+        Alert.alert(
+          'Error',
+          'Database Connection timed out, please relogin',
+          [{text: 'OK', onPress:()=>{dispatch(logOut())}}]
+        )
+      }
+    }
   }
 
   toggleSortDirection(sortingColoum: number) {
@@ -102,33 +93,41 @@ class Table extends Component<Props, State> {
     }
   }
 
-  /*********************
-   * The render method *
-   *********************/
+  /************************************************************************************************
+   * The render method                                                                            *
+   ************************************************************************************************/
   render() {
     //if waiting for data from DB
     if (!this.state.table[0])
       return (<Text>Loading ... </Text>);
 
-    //if error occured while getting data from db
-    if (this.state.table[0].value[0] == 'Error')
-      return (<Text>Error...</Text>)
-
     //creating Table rows
     const styles = [tableStyle.row, tableStyle.row1]
     const rows = this.state.table.map((item, index) => {
       return (
-        <TouchableOpacity style={styles[index % 2]} key={'touch_'+index+Math.random()} onPress={() => this.props.navigate(`/data/${item.id}`)}>
-          {item.value.slice(0, 3).map((subitem:string) => {
-            if (subitem)
+        <TouchableOpacity 
+          style={styles[index % 2]} 
+          key={'touch_' + index + Math.random()} 
+          onPress={() => this.props.navigate(`/data/${item.id}`)}
+        >
+          {item.value.slice(0, 3).map((subitem: string, index) => {
+            if (subitem){
+              subitem = subitem.length > 32 ? subitem.slice(subitem.length - 32) : subitem;
+              if(index === 0){
+                let tmp = subitem.split('/');
+                subitem = tmp[tmp.length -1]
+              }
               return (
-                <View key={'view_'+index+Math.random()} style={tableStyle.cell}>
-                  <Text key={'text_'+index+Math.random()}>{subitem.length > 32 ? subitem.slice(subitem.length - 32) : subitem}</Text>
+                <View key={'view_' + index + Math.random()} style={tableStyle.cell}>
+                  <Text key={'text_' + index + Math.random()}>
+                    {subitem}
+                  </Text>
                 </View>
               )
+            }
             return (
               <View key={'empty' + Math.random()} style={tableStyle.cell} >
-                <Text key={'text_'+index+Math.random()}>empty</Text>
+                <Text key={'text_' + index + Math.random()}>empty</Text>
               </View>)
           })}
         </TouchableOpacity>
@@ -142,7 +141,7 @@ class Table extends Component<Props, State> {
         <View style={tableStyle.header}>
           <View style={tableStyle.heading}>
             <TouchableOpacity onPress={() => this.toggleSortDirection(0)} style={tableStyle.sorter}>
-              <View>
+              <View style={tableStyle.colHead}>
                 <Text style={tableStyle.headingText}>{this.state.headings[0].name}</Text>
                 <FontAwesome5 name={this.state.coloums[0]} size={20} style={tableStyle.sortIcon} />
               </View>
@@ -150,15 +149,15 @@ class Table extends Component<Props, State> {
           </View>
           <View style={tableStyle.heading}>
             <TouchableOpacity onPress={() => this.toggleSortDirection(1)} style={tableStyle.sorter}>
-              <View>
+              <View style={tableStyle.colHead}>
                 <Text style={tableStyle.headingText}>{this.state.headings[1].name}</Text>
-                <FontAwesome5 name={this.state.coloums[1]} size={20} style={tableStyle.sortIcon} />
+                <FontAwesome5 name={this.state.coloums[1]} size={20} style={tableStyle.sortIcon}/>
               </View>
             </TouchableOpacity>
           </View>
           <View style={tableStyle.heading}>
             <TouchableOpacity onPress={() => this.toggleSortDirection(2)} style={tableStyle.sorter}>
-              <View>
+              <View style={tableStyle.colHead}>
                 <Text style={tableStyle.headingText}>{this.state.headings[2].name}</Text>
                 <FontAwesome5 name={this.state.coloums[2]} size={20} style={tableStyle.sortIcon} />
               </View>
@@ -175,10 +174,8 @@ class Table extends Component<Props, State> {
   }
 }
 
-//wrapper to get access to url parms... because native router is sh!t
-
-export default function withLocation(){
-  return(
-    <Table params={useParams()} navigate={useNavigate()}/>
+export default function withLocation() {
+  return (
+    <Table params={useParams()} navigate={useNavigate()} />
   )
 }
