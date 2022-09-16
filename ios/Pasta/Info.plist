@@ -17,7 +17,7 @@
     <key>CFBundlePackageType</key>
     <string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>1.0.1</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleURLTypes</key>
@@ -26,12 +26,6 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>de.micromechanics.pasta</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>com.googleusercontent.apps.672619119522-e9badrb1j91074ai2utsdvsplfgtnd3l</string>
         </array>
       </dict>
       <dict>
