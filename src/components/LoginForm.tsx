@@ -38,10 +38,10 @@ export default class LoginForm extends Component<Props, State> {
       hidePassword: true,
       scanQR:       false,
       configname:   'default',
-      username:     'testUser',
-      password:     'D3poJxAGxpeTwa',
-      server  :     '134.94.32.112',
-      database:     'pasta_tutorial'
+      username:     '',
+      password:     '',
+      server  :     '',
+      database:     ''
     }
   }
 
