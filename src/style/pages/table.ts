@@ -34,10 +34,17 @@ import { accent, bordercolor, mainColor, SCREEN_HEIGHT, secondary, textColor } f
   header: {
     width: '100%',
     flexDirection: 'row',
-    height: 30
+    height: 35,
+    backgroundColor: '#444444',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
   },
   heading: {
-    width: '33.3%'
+    width: '33.3%',
+    paddingRight: 10,
+    borderRightColor: '#333',
+    borderRightWidth: 1
   },
   headingText: {
     marginTop: 'auto',

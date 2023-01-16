@@ -140,7 +140,7 @@ class Table extends Component<Props, State> {
         <Text style={misc.heading}>{this.state.docLabel}</Text>
         <View style={tableStyle.header}>
           <View style={tableStyle.heading}>
-            <TouchableOpacity onPress={() => this.toggleSortDirection(0)} style={tableStyle.sorter}>
+            <TouchableOpacity onPress={() => this.toggleSortDirection(0)} activeOpacity={1} style={tableStyle.sorter}>
               <View style={tableStyle.colHead}>
                 <Text style={tableStyle.headingText}>{this.state.headings[0].name}</Text>
                 <FontAwesome5 name={this.state.coloums[0]} size={20} style={tableStyle.sortIcon} />
@@ -148,7 +148,7 @@ class Table extends Component<Props, State> {
             </TouchableOpacity>
           </View>
           <View style={tableStyle.heading}>
-            <TouchableOpacity onPress={() => this.toggleSortDirection(1)} style={tableStyle.sorter}>
+            <TouchableOpacity onPress={() => this.toggleSortDirection(1)} activeOpacity={1} style={tableStyle.sorter}>
               <View style={tableStyle.colHead}>
                 <Text style={tableStyle.headingText}>{this.state.headings[1].name}</Text>
                 <FontAwesome5 name={this.state.coloums[1]} size={20} style={tableStyle.sortIcon}/>
@@ -156,7 +156,7 @@ class Table extends Component<Props, State> {
             </TouchableOpacity>
           </View>
           <View style={tableStyle.heading}>
-            <TouchableOpacity onPress={() => this.toggleSortDirection(2)} style={tableStyle.sorter}>
+            <TouchableOpacity onPress={() => this.toggleSortDirection(2)} activeOpacity={1} style={tableStyle.sorter}>
               <View style={tableStyle.colHead}>
                 <Text style={tableStyle.headingText}>{this.state.headings[2].name}</Text>
                 <FontAwesome5 name={this.state.coloums[2]} size={20} style={tableStyle.sortIcon} />

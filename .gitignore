@@ -125,6 +125,7 @@ dist/
 .vscode/
 private.*
 credentials.png
+credentials.json
 GoogleService-info.plist
 google-services.json
 eas-api-key.json

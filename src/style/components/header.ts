@@ -9,7 +9,7 @@ import { accent } from "../consts";
   container: {
     flexDirection: 'row',
     width: '100%',
-    height: '20%',
+    height: '25%',
     paddingTop: '1%',
     paddingLeft: 20,
     paddingRight: 20,
@@ -28,7 +28,7 @@ import { accent } from "../consts";
     marginTop: 'auto',
     marginRight: 'auto',
     marginLeft: 0,
-    height: '80%',
+    height: '90%',
     width: 55,
     resizeMode: 'contain'
   },
@@ -37,7 +37,7 @@ import { accent } from "../consts";
     marginTop: 'auto',
     marginRight: -6,
     marginLeft: 'auto',
-    height: '80%',
+    height: '90%',
     width: 55,
     resizeMode: 'contain'
   },
@@ -46,6 +46,7 @@ import { accent } from "../consts";
     marginBottom: 'auto',
     marginLeft: 'auto',
     marginRight: 'auto',
-    fontSize: 30
+    fontSize: 40,
+    fontWeight: 'bold'
   }
 });

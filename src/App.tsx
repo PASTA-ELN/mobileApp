@@ -19,9 +19,6 @@ import { logIn, logOut } from './store/reducer/Login';
 import { appStyle } from './style/app';
 import { CredentialWithConfigName } from './types/Interactions';
 import { InitialState } from './types/store';
-import { expo } from '../app.json';
-
-global.version = expo.version;
 
 type Props = {
   isLoggedIn: boolean;

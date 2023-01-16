@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { bordercolor, mainColor, SCREEN_HEIGHT, SCREEN_WIDTH, textColor } from "../consts";
+import { accent, bordercolor, mainColor, SCREEN_HEIGHT, SCREEN_WIDTH, textColor } from "../consts";
 
 /**************************
  * Stylesheet for Data.js *
@@ -11,7 +11,7 @@ import { bordercolor, mainColor, SCREEN_HEIGHT, SCREEN_WIDTH, textColor } from "
   },
   header: {
     flexDirection: 'row',
-    height: '10%',
+    height: '11%',
     paddingTop: 2.5,
     paddingBottom: 2.5
   },
@@ -87,13 +87,22 @@ import { bordercolor, mainColor, SCREEN_HEIGHT, SCREEN_WIDTH, textColor } from "
     backgroundColor: mainColor,
     borderTopColor: bordercolor,
     borderTopWidth: 1,
-    paddingLeft: 10,
-    paddingRight: 10
   },
   basicEntry: {
-    minHeight: 20,
-    borderColor: bordercolor,
-    borderWidth: 1
+    minHeight: 30,
+    paddingLeft: 5,
+    backgroundColor: mainColor,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  basicEntry1: {
+    minHeight: 30,
+    paddingLeft: 5,
+    backgroundColor: accent,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   image: {
     width: '100%',

@@ -12,9 +12,7 @@ import Dialog from 'react-native-dialog';
 import { Params, useParams, useNavigate, NavigateFunction } from 'react-router-native';
 
 import CameraComponent from '../components/CameraComponent';
-import Details from '../components/Details';
 import { dataStyle, mainColor } from '../style';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
   params: Params;
@@ -28,9 +26,10 @@ type State = {
   docType: string;
   path: string;
   scanQR: boolean;
-  showDetails?: string;
   showAttachments: boolean;
+  showComments: boolean;
   showIssues: boolean;
+  showQR: boolean;
   dialogValue: string;
   openAlert: boolean;
   switchValue: boolean;
@@ -49,7 +48,9 @@ class Data extends Component<Props, State> {
       path: '',
       scanQR: false,
       showAttachments: false,
+      showComments: false,
       showIssues: false,
+      showQR: false,
       //dialogBox attributes
       dialogValue: '',
       openAlert: false,
@@ -179,40 +180,78 @@ class Data extends Component<Props, State> {
 
     //TODO ontology.map
     /* Render document into key:value pair; skip items that should be skiped   */
+    const styles = [dataStyle.basicEntry, dataStyle.basicEntry1];
     const listPairs = Object.keys(this.state.data).map((key, index) => {
       if (this.skipKeys.indexOf(key) > -1)
         return null;
 
+      if(key.startsWith('meta'))
+        return null;
+      if(key.startsWith('-'))
+        return null;
 
       //different method for displaying images
-      if (key == 'image' || key == '-client' || key == '-branch' || key == '-user')
-        return null
+      if (key == 'image')
+        return null;
 
       //markdown content
       if (key == 'content' && this.state.fileEnding === 'md')
         return null;
 
+      //Issues
       if (key == 'issues') {
         const values = Object.keys(this.state.data['issues']).map((key) => {
           const textColor = this.state.data['issues'][key].open ? 'red' : 'black';
           return <Text key={'list' + key} style={{ color: textColor }}>{this.state.data['issues'][key].value}</Text>
         })
         return (
-          <TouchableOpacity key={'list' + key + 'C'} style={dataStyle.basicEntry} onPress={() => this.setState({ showDetails: 'issues' })}>
-            {values}
+          <TouchableOpacity key={'list' + key + 'C'} style={dataStyle.basicEntry} onPress={()=>{this.setState({showIssues: true})}}>
+            <Text>Issues:</Text>
+            <View>
+              {values}
+            </View>
+            <Ant name='edit'/>
           </TouchableOpacity>
         )
       }
 
       //attachments
-      if(key == '-attachment'){
-        AsyncStorage.getItem('ontology').then(res => {
-          if(this.state.docType === undefined)
-            return;
-          const docType = JSON.parse(res!)[this.state.docType];
-          console.log(Object.keys(docType));
-        })
-        return;
+      if(key == 'attachment'){
+        const names = Object.keys(this.state.data['attachment']);
+        const rows = names.map( item => {
+          return (
+            <View key={'list' + key + 'C'}>
+              <Text key={'list' + key + item}>{item}:</Text>
+            </View>
+          )
+        });
+        return (
+          <TouchableOpacity key={'list' + key + 'CC'} onPress={() => this.setState({showAttachments: true})}>
+            <Text>Attachments:</Text>
+            <View>
+              {rows}
+            </View>
+          </TouchableOpacity>
+        )
+      }
+
+      //Comment
+      if(key == 'comment'){
+        return (
+          <TouchableOpacity onPress={() => this.setState({showComments: true})}>
+            <Text>Comment: {this.state.data['comment']}</Text>
+          </TouchableOpacity>
+        )
+      }
+
+      //QR-Code
+      if(key == 'qrCode'){
+
+        return (
+          <TouchableOpacity >
+            <Text>QR-Code: {this.state.data['qrCode']}</Text>
+          </TouchableOpacity>
+        )
       }
 
       //JSON objects
@@ -229,19 +268,31 @@ class Data extends Component<Props, State> {
         );
       }
 
-      //Empty Arrays
+      //Arrays
       if (Array.isArray(this.state.data[key])){
         if(!this.state.data[key]){
           return null
         }
-        this.state.data[key].forEach((element:any) => {
-          
-        })
+        const entries = this.state.data[key].map((element:any) => {
+          if(typeof element !== 'string'){
+            return;
+          }
+          return (
+            <Text>{element}</Text>
+          )
+        });
+
+        return (
+          <View>
+            <Text>{key}:</Text>
+            {entries}
+          </View>
+        )
       }
 
       //everything else
       return (
-        <View key={'list' + key + 'C'} style={dataStyle.basicEntry}>
+        <View key={'list' + key + 'C'} style={styles[index % 2]}>
           <Text key={'list' + key}>{key + ': ' + this.state.data[key]}</Text>
         </View>
       );
@@ -264,16 +315,27 @@ class Data extends Component<Props, State> {
     if (this.state.scanQR)
       return this.showQR();
 
-    if (this.state.showDetails) {
+    if (this.state.showAttachments){
       return (
-        <Details name={this.state.showDetails} goBack={() => this.setState({ showDetails: '' })} />
+        <View>
+          <TouchableOpacity style={dataStyle.backButtonContainer} onPress={() => this.setState({showAttachments: false})}>
+            <Ion style={dataStyle.backIcon} name='ios-arrow-back-sharp' size={30} color={mainColor}/>
+            <Text style={dataStyle.goBackText}>close</Text>
+            <Text>not working!</Text>
+          </TouchableOpacity>
+        </View>
       )
     }
-    if (this.state.showAttachments){
-
-    }
     if (this.state.showIssues){
-      
+      return (
+        <View>
+          <TouchableOpacity style={dataStyle.backButtonContainer} onPress={() => this.setState({showIssues: false})}>
+            <Ion style={dataStyle.backIcon} name='ios-arrow-back-sharp' size={30} color={mainColor}/>
+            <Text style={dataStyle.goBackText}>close</Text>
+            <Text>not working!</Text>
+          </TouchableOpacity>
+        </View>
+      )
     }
 
     return (
@@ -294,6 +356,10 @@ class Data extends Component<Props, State> {
             <TouchableOpacity style={dataStyle.ButtonContainer} onPress={() => this.setState({ scanQR: true })}>
               <Ant style={dataStyle.icon} name='qrcode' size={20} />
               <Text style={dataStyle.text}>add QR Code</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={dataStyle.ButtonContainer} onPress={() => this.setState({ showAttachments: true })}>
+              <Ant style={dataStyle.icon} name='edit' size={20}></Ant>
+              <Text style={dataStyle.text}>Attachments</Text>
             </TouchableOpacity>
           </View>
         </View>

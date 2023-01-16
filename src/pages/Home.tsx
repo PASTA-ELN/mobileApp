@@ -57,8 +57,6 @@ export default class Home extends Component<Props, State> {
     if (!this.state.dataTypes)
       return (<View/>);
 
-    return <Navigate to='/data/m-006c9a52d74d3e248ed8216266a2cccf'/>
-
     const iconColor = '#000000';
     
     const aList = this.state.dataTypes.map(i => {

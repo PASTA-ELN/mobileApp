@@ -40,7 +40,7 @@
     "react-native-vision-camera": "^2.13.3",
     "react-native-web": "0.17.7",
     "react-redux": "^8.0.2",
-    "react-router-native": "^6.3.0",
+    "react-router-native": "^6.4.2",
     "redux": "^4.2.0",
     "vision-camera-code-scanner": "^0.2.0"
   },

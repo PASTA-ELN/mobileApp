@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import type { Credential, CredentialWithConfigName } from './types/Interactions';
+import { Alert } from 'react-native';
 
 export var db: AxiosInstance|undefined = undefined;
 
@@ -99,6 +100,7 @@ export async function testCredentials(credentials: CredentialWithConfigName): Pr
         if(res.status === 200){
           resolve('success')
         } else {
+          Alert.alert('info',JSON.stringify(res));
           reject(res.status);
         }
       }
