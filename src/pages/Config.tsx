@@ -14,6 +14,18 @@ import { CredentialWithConfigName } from '../types/Interactions';
 import { dispatch } from '../store';
 import { logOut } from '../store/reducer/Login';
 
+
+
+//TODO
+
+// Developer Knopf 
+// => hässliche Daten auch anzeigen
+
+//Logs anzeigen lassen
+//Log datei an email schicken
+
+
+
 type Props = {
   allCredentials: CredentialWithConfigName[];
   username: string;
@@ -219,10 +231,18 @@ class Config extends Component<Props, State> {
 }
 
 function mapStateToProps(state: InitialState){
-  const allCredentials = state.configuration.allCredentials;
-  const username = state.login.usedConfig?.username!;
+  const allCredentials = state.login.allCredentials;
   const configname = state.login.usedConfigName!;
-  return { allCredentials: allCredentials, username: username, configname: configname }
+
+  let username: string = '';
+
+  allCredentials.forEach(item => {
+    if(item.configname === configname){
+      username = item.credentials.username;
+    }
+  })
+
+  return { allCredentials: allCredentials, username, configname: configname }
 }
 
 export default connect(mapStateToProps)(Config);

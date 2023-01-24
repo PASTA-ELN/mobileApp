@@ -24,6 +24,8 @@ type State = {
   database:     string;
 }
 
+// TODO feedback bei falschem qr Code
+
 export default class LoginForm extends Component<Props, State> {
   usernameInput = createRef<TextInput>()
   passwordInput = createRef<TextInput>()

@@ -14,10 +14,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Table from './pages/Table';
 import Header from './components/Header';
-import { dispatch } from './store';
-import { logIn, logOut } from './store/reducer/Login';
 import { appStyle } from './style/app';
-import { CredentialWithConfigName } from './types/Interactions';
 import { InitialState } from './types/store';
 
 type Props = {
@@ -41,19 +38,7 @@ class App extends Component<Props, State> {
    * separate function since it has to be async-await
   */
   async init() {
-    var lastLogin = await AsyncStorage.getItem('lastLogin');
-
-    var _allCredentials = await AsyncStorage.getItem('allCredentials');
-    if(_allCredentials === null){
-      return;
-    }
-    var allCredentials: CredentialWithConfigName[] = JSON.parse(_allCredentials);
-
-    allCredentials.forEach(element => {
-      if(element.configname === lastLogin){
-        dispatch(logIn(element));
-      }
-    })
+    //TODO dispatch relogin
   }
 
   /************************************************************************************************

@@ -35,6 +35,11 @@ type State = {
   switchValue: boolean;
 }
 
+//TODO:
+// Einrückung unterschiedlich
+// unterer Knopf abgeschnitten
+// Logs ?
+
 class Data extends Component<Props, State> {
   skipKeys = ['_id', '_rev', 'branch', 'client'];
 
@@ -76,7 +81,7 @@ class Data extends Component<Props, State> {
         reject('failed to fetch data');
         return;
       }
-      const fileNameSplit: string[] = res.data['name'].split('.');
+      const fileNameSplit: string[] = res.data['-name'].split('.');
         if (!('attachment' in Object.keys(res.data))) {
           res.data['attachment'] = {}
         }

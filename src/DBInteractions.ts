@@ -5,8 +5,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import type { AxiosInstance, AxiosResponse } from 'axios';
-import type { Credential, CredentialWithConfigName } from './types/Interactions';
-import { Alert } from 'react-native';
+import type { Credential } from './types/Interactions';
 
 export var db: AxiosInstance|undefined = undefined;
 
@@ -84,43 +83,38 @@ export async function nuke() {
 /** 
  * function to test credentials before adding them 
  */
-export async function testCredentials(credentials: CredentialWithConfigName): Promise<string> {
+export async function testCredentials(credentials: Credential): Promise<string> {
   return new Promise<string>(async function (resolve, reject) {
-    await axios.get(
-      'http://' + credentials.credentials.server + ':5984/' + credentials.credentials.database + '/-ontology-',
+
+    const res = await axios.get(
+      'http://' + credentials.server + ':5984/' + credentials.database + '/-ontology-',
       {
         auth: {
-          username: credentials.credentials.username,
-          password: credentials.credentials.password,
+          username: credentials.username,
+          password: credentials.password,
         },
         timeout: 2000
       }
-    ).then(
-      (res) => { 
-        if(res.status === 200){
-          resolve('success')
-        } else {
-          Alert.alert('info',JSON.stringify(res));
-          reject(res.status);
-        }
-      }
     ).catch(
       (error) => {
-        const status = error.toJSON().status
+        if(!error.response){
+          return resolve('no server connection')
+        }
+
+        const status = error.response.status;
+
+        console.log(status);
+
         if(status === 401){
-          resolve('invalid username/password');
-          return;
+          return resolve('invalid username/password');
         }
         if(status === 404){
-          resolve('database not found');
-          return;
+          return resolve('database not found');
         }
-        if(status === null){
-          resolve('no server connection');
-          return;
-        }
-        resolve('internal error')
+
+        return resolve('internal error')
       }
-    );
+    ); 
+    resolve('success');
   });
 }

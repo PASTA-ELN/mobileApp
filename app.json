@@ -43,7 +43,7 @@
       "permissions": [
         "android.permission.CAMERA"
       ],
-      "versionCode": 2
+      "versionCode": 3
     },
     "extra": {
       "eas": {

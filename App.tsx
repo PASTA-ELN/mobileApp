@@ -10,7 +10,7 @@ import 'expo-dev-client';
 import 'react-native-reanimated'
 
 import App from './src/App';
-import { makestore } from './src/store';
+import { store } from './src/store';
 
 /**
  * btoa and atob polyfills are broken in RN so we manually provide base64 encoding
@@ -41,7 +41,7 @@ export default class _App extends Component<Props, State> {
 
   render(): React.ReactNode {
     return (
-      <ReduxProvider store={makestore()}>
+      <ReduxProvider store={store}>
           <App />
       </ReduxProvider>
     )

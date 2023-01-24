@@ -1,6 +1,5 @@
 /**
  * @file Functions that do interaction with asyncStorage
- * - Location of loggedIn flag
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,19 +8,30 @@ import type { CredentialWithConfigName } from './types/Interactions';
 /**
  * save Credentials to asyncstorage
  */
-export async function saveCredentials(newCredentials: CredentialWithConfigName){
+export async function saveCredentials(newCredentials: CredentialWithConfigName[]){
   return new Promise<void>(async function(resolve, reject){
-    const credentialString = await AsyncStorage.getItem('allCredentials');
-    const credentials: CredentialWithConfigName[] = 
-      credentialString ? JSON.parse(credentialString): [];
-    credentials.push(newCredentials);
-    await AsyncStorage.setItem('allCredentials', JSON.stringify(credentials));
-    await AsyncStorage.setItem('lastLogin', newCredentials.configname);
+    return AsyncStorage.setItem('allCredentials', JSON.stringify(newCredentials));
+  })
+}
+
+export async function newLogin(config: CredentialWithConfigName){
+  return new Promise<void>(async function(resolve, reject){
+    return Promise.all([
+      () => AsyncStorage.setItem('lastLogin', JSON.stringify(config.configname)),
+      () => {
+        AsyncStorage.getItem('allCredentials')
+          .then(res => {
+            const items = JSON.parse(res!);
+            items.push(config);
+            AsyncStorage.setItem('allCredentials', JSON.stringify(items));
+          });
+      }
+    ])
   })
 }
 
 /**
- * load Credentials to asyncstorage
+ * load Credentials from asyncstorage
  */
 export async function loadCredentials(){
   return new Promise<CredentialWithConfigName[]>(function(resolve, reject){

@@ -8,9 +8,8 @@ import Toast from 'react-native-toast-message';
 
 import LoginForm from '../components/LoginForm';
 import { CredentialWithConfigName } from '../types/Interactions';
-import { initDB, testCredentials } from '../DBInteractions'
 import { dispatch } from '../store';
-import { logIn } from '../store/reducer/Login';
+import { login } from '../store/reducer/Login';
 import { loginStyle } from '../style/pages/login';
 
 type Props = {}
@@ -23,17 +22,15 @@ export default class Login extends Component<Props, State> {
   }
 
   submit = async (credential: CredentialWithConfigName) => {
-    let res = await testCredentials(credential);
-    if(res === 'success'){
-      await initDB(credential.credentials);
-      dispatch(logIn(credential));
-      return Promise.resolve();
+    const res = await dispatch(login(credential)).unwrap();
+
+    if(res !== 'success'){
+      Toast.show({
+        type: 'error',
+        text1: 'warning',
+        text2: res
+      })
     }
-    Toast.show({
-      type: 'error',
-      text1: 'warning',
-      text2: res
-    })
   }
 
   /*********************
