@@ -1,16 +1,17 @@
 /**
  * @file used by expo run:[ios/android]
  */
+import 'react-native-reanimated'
+
 import React, { Component } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import { decode, encode } from 'base-64';
-import type { InitialProps } from 'expo/build/launch/withExpoRoot.types';
 import { expo } from './app.json';
-import 'expo-dev-client';
-import 'react-native-reanimated'
 
 import App from './src/App';
 import { store } from './src/store';
+
+import type { InitialProps } from 'expo/build/launch/withExpoRoot.types';
 
 /**
  * btoa and atob polyfills are broken in RN so we manually provide base64 encoding
@@ -24,7 +25,6 @@ if (!global.atob) {
 }
 
 global.version = expo.version;
-
 
 type Props = InitialProps & {};
 type State = {}

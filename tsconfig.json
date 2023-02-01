@@ -14,7 +14,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "esnext",    
+    "target": "esnext"
   },
   "exclude": [
     "node_modules",
@@ -26,6 +26,6 @@
     "src",
     "index.ts",
     "App.tsx", 
-    "enviroments.d.ts"    
+    "global.d.ts"    
   ]
 }

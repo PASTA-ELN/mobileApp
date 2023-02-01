@@ -4,7 +4,7 @@
   "expo": {
     "name": "Pasta",
     "slug": "Pasta",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -39,11 +39,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "icon": "./assets/icon.png",
       "package": "de.micromechanics.pasta",
       "permissions": [
         "android.permission.CAMERA"
       ],
-      "versionCode": 3
+      "versionCode": 4
     },
     "extra": {
       "eas": {

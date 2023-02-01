@@ -1,3 +1,4 @@
+import { Logger } from "./src/Logger";
 
 declare global{
   namespace NodeJS{
@@ -8,5 +9,3 @@ declare global{
 
   readonly var version;
 }
-
-export{}
