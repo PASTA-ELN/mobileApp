@@ -67,8 +67,6 @@ export default function CameraComponent({
     height: SCREEN_HEIGHT
   }:{
     height: SCREEN_WIDTH,
-    marginBottom: 'auto',
-    marginTop: 'auto'
   };
     
   return device != null && hasPermission ?

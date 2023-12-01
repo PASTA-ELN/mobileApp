@@ -129,3 +129,6 @@ credentials.json
 GoogleService-info.plist
 google-services.json
 eas-api-key.json
+
+ios/
+android/
