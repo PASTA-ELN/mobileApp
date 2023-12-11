@@ -15,7 +15,7 @@
     },
     "plugins": [
       [
-        "react-native-vision-camera",
+        "expo-barcode-scanner",
         {
           "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera."
         }

@@ -3,6 +3,7 @@
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
@@ -11,10 +12,23 @@
     "module": "es2022",
     "moduleResolution": "node",
     "noEmit": true,
+    "paths": {
+      "components/*": ["src/components/*"],
+      "hooks/*":      ["src/hooks/*"],
+      "pages/*":      ["src/pages/*"],
+      "store":        ["src/store/index.ts"],
+      "store/*":      ["src/store/*"],
+      "utils/*":      [ "src/utils/*"],
+      "types/*":      ["types/*"],
+    },
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "typeRoots": [
+      "./types", 
+      "./node_modules/@types"
+    ]
   },
   "exclude": [
     "node_modules",
@@ -24,8 +38,7 @@
   ],
   "include": [
     "src",
-    "index.ts",
+    "types",
     "App.tsx", 
-    "global.d.ts"    
   ]
 }
