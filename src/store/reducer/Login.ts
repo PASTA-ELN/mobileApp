@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { Credentials, type CredentialsConfig } from 'types/Credentials'
 import { checkCredentials, initDB } from 'utils/DBInteractions'
+import { Toast } from 'utils/toast'
 
 type LoginState = {
   loggedIn: boolean,
@@ -18,13 +19,17 @@ export const login = createAsyncThunk<void, CredentialsConfig>(
   'login/login',
   async (arg) => {
     try {
-      if(!checkCredentials(arg.credentials)){
-        return Promise.reject('Invalid credentials');
-      }
+      await checkCredentials(arg.credentials)
+        .catch((err: string) => {
+          Toast.error(err);
+          return Promise.reject(err);
+        });
+        
       await initDB(arg.credentials);
       return Promise.resolve();
     }
-    catch (err) {
+    catch (err: any) {
+      Toast.error(err as string);
       return Promise.reject(err);
     }
   }
@@ -46,7 +51,10 @@ const loginSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.loggedIn = true;
+      state.usedConfig = action.meta.arg.configName;
+    });      
   }
 });
 

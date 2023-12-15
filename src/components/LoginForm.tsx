@@ -1,7 +1,12 @@
 import React from 'react'
-import { Button, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import CheckBox from 'react-native-check-box';
-import { CredentialsConfig } from 'types/Credentials';
+import { Alert, Button, Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Toast } from 'utils/toast'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { type BarCodeScannerResult } from 'expo-barcode-scanner'
+
+import Input from './Input'
+import CameraComponent from './CameraComponent'
+import { type CredentialsConfig } from 'types/Credentials'
 
 type IProps = {
   submit: (credentials: CredentialsConfig) => void;
@@ -25,19 +30,21 @@ export default function(props: IProps) {
   const [password, setPassword] = React.useState<string>('');
   const [database, setDatabase] = React.useState<string>('');
   const [server,   setServer]   = React.useState<string>('');
-  const [config,   setConfig]   = React.useState<string>('');
+  const [config,   setConfig]   = React.useState<string>('default');
 
   /**
    * Misc State
    */
-  const [showPassword, setShowPassword] = React.useState<boolean>(false);
-  const [scanQR,       setScanQR]       = React.useState<boolean>(false);
-  const [useNow,       setUseNow]       = React.useState<boolean>(false);
+  const [scanQR, setScanQR] = React.useState<boolean>(false);
 
   /**
    * functions
    */
   function submit() {
+    if(!username || !password || !database || !server || !config){
+      Toast.error('Please fill out all fields');
+      return;
+    }
     props.submit({
       configName: config,
       credentials: {
@@ -49,99 +56,117 @@ export default function(props: IProps) {
     })
   }
 
+  function handleBarcodeScanned(result: BarCodeScannerResult, retry: () => void): void {
+    try {
+      const { credentials, configname } = JSON.parse(result.data);
+      Alert.alert(
+        'QR-Code scanned', 
+        `Do you want to use this configuration?\n\n${credentials.database} on ${credentials.server}`, 
+        [
+          {
+            text: 'Cancel',
+            onPress: retry,
+            style: 'cancel'
+          },
+          {
+            text: 'Use',
+            onPress: () => {
+              setUsername(credentials.username);
+              setPassword(credentials.password);
+              setDatabase(credentials.database);
+              setServer(credentials.server);
+              setConfig(configname);
+              setScanQR(false);
+            }
+          }
+        ], 
+        { cancelable: false }
+      );
+    } catch (error) {
+      Toast.error('Invalid QR-Code');
+      retry();
+    }
+  }
+
   if(scanQR){
     return (
-      <View>
-        <Text>Scan QR</Text>
-        <TouchableOpacity onPress={() => setScanQR(false)}>
-          <Text>Back</Text>
-        </TouchableOpacity>
+      <View className='w-full h-full flex flex-col p-2 items-center justify-center'>
+        <View className='w-full h-2/3 flex flex-col bg-gray-900 rounded-3xl p-2'>
+          <View className='w-full h-[90%] bg-gray-800 rounded-3xl'>
+            <CameraComponent 
+              handleBarcodeScanned={handleBarcodeScanned}
+            />
+          </View>
+          <Button title='Cancel' onPress={() => setScanQR(false)}/>
+        </View>
       </View>
     )
   }
 
   return (
-    <View>
-      <View>
-        <Text>PASTA</Text>
-        <TouchableOpacity onPress={() => setScanQR(true)}>
-          <Text>Scan QR</Text>
-        </TouchableOpacity>
+    <View className='w-3/4 h-fit border border-gray-950 bg-gray-900 text-zinc-200 rounded-3xl px-2 pt-4 pb-2'>
+      <View className='w-full h-1/8 flex flex-row items-center justify-center'>
+        <Image source={require('assets/adaptive-icon.png')} className='w-20 h-20'/>
+        <Text className='text-zinc-200 text-[50px]'>PASTA</Text>
       </View>
-      <TextInput
-        autoCapitalize='none'
-        autoCorrect={false}
-        onChangeText={setUsername}
-        onSubmitEditing={() => passwordInput.current.focus()}
-        placeholderTextColor='grey'
-        placeholder='Username'
-        ref={usernameInput}
-        style={{}}
-        value={username}
-      />
-      <View style={{ flexDirection: 'row'}}>
-        <TextInput
-          autoCapitalize='none'
-          autoCorrect={false}
-          onChangeText={setPassword}
-          onSubmitEditing={() => databaseInput.current.focus()}
-          placeholderTextColor='grey'
+      <View className='w-full h-1/8 px-4'>
+        <View className='h-[1px] bg-gray-800 my-4'/>
+        <TouchableOpacity onPress={() => setScanQR(true)}>
+          <View className='w-full flex flex-row items-center justify-evenly'>
+            <Text className=' text-zinc-400'>
+              scan QR-Code to log in
+            </Text>
+            <MaterialCommunityIcons name='qrcode-scan' size={30} color='rgb(59,130,246)' />
+          </View>
+        </TouchableOpacity>
+        <View className='h-[1px] bg-gray-800 mt-4'/>
+      </View>
+      <View className='w-full h-fit p-4 flex flex-col items-center justify-center'>
+        <Input
+          onTextChange={setUsername}
+          onSubmit={() => passwordInput.current.focus()}
+          placeholder='Username'
+          ref={usernameInput}
+          value={username}
+        />
+        <Input
+          onTextChange={setPassword}
+          onSubmit={() => databaseInput.current.focus()}
           placeholder='Password'
           ref={passwordInput}
-          secureTextEntry={!showPassword}
-          style={{}}
+          type='password'
           value={password}
         />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Text>Show</Text>
-        </TouchableOpacity>
-      </View>
-      <TextInput
-        autoCapitalize='none'
-        autoCorrect={false}
-        onChangeText={setDatabase}
-        onSubmitEditing={() => serverInput.current.focus()}
-        placeholderTextColor='grey'
-        placeholder='Database'
-        ref={databaseInput}
-        style={{}}
-        value={database}
-      />
-      <TextInput
-        autoCapitalize='none'
-        autoCorrect={false}
-        onChangeText={setServer}
-        onSubmitEditing={() => configInput.current.focus()}
-        placeholderTextColor='grey'
-        placeholder='Server'
-        ref={serverInput}
-        style={{}}
-        value={server}
-      />
-      <TextInput
-        autoCapitalize='none'
-        autoCorrect={false}
-        onChangeText={setConfig}
-        onSubmitEditing={() => {}}
-        placeholderTextColor='grey'
-        placeholder='Config'
-        ref={configInput}
-        style={{}}
-        value={config}
-      />
-      <View>
-        <CheckBox 
-          isChecked={useNow}
-          onClick={() => setUseNow(!useNow)}
-          style={{}}
+        <Input
+          onTextChange={setDatabase}
+          onSubmit={() => serverInput.current.focus()}
+          placeholder='Database'
+          ref={databaseInput}
+          value={database}
         />
-        <Text>Use Now</Text>
-        <View style={{}}>
-          <Button
-            onPress={submit}
-            title='Login'
-          />
-        </View>
+        <Input
+          onTextChange={setServer}
+          onSubmit={() => configInput.current.focus()}
+          placeholder='Server'
+          ref={serverInput}
+          value={server}
+        />
+        <Input
+          onTextChange={setConfig}
+          onSubmit={() => {}}
+          placeholder='Config'
+          ref={configInput}
+          value={config}
+        />
+      </View>
+      <View className='px-4'>
+        <View className='h-[1px] bg-gray-800'/>
+      </View>
+      <View className='w-full h-1/8 flex flex-row items-center justify-end p-4'>
+        <Button
+          onPress={submit}
+          title='Login'
+        />
       </View>
     </View>
   )

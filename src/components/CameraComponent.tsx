@@ -1,48 +1,56 @@
 import React from 'react';
 import { BarCodeScanner, type BarCodeScannerResult } from 'expo-barcode-scanner'
-import { Alert, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 type IProps = {
-  onSuccess: (result: string) => void;
+  handleBarcodeScanned: (result: BarCodeScannerResult, retry: () => void) => void;
 }
 export default function(props: IProps) {
   const [hasPermission, setHasPermission] = React.useState<boolean>(false);
   const [scanned, setScanned] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-    };
+  async function getBarCodeScannerPermissions() {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    setHasPermission(status === 'granted');
+  }
 
-    getBarCodeScannerPermissions();
+  React.useEffect(() => {
+    getBarCodeScannerPermissions()
   }, []);
 
   function handleBarCodeScanned(result: BarCodeScannerResult) {
     setScanned(true);
-    Alert.alert(
-      'Scan successful!',
-      JSON.stringify(result),
-      [
-        { text: 'retry', onPress: () => setScanned(false) },
-        { text: 'Use Now', onPress: () => props.onSuccess(result.data) },
-      ]
-    )
+    props.handleBarcodeScanned(result, () => setScanned(false));
   }
 
   if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
+    return (
+      <View className='w-full h-full flex items-center justify-center'>
+        <Text className='text-zinc-300 text-2xl'>
+          Loading...
+        </Text>
+      </View>
+    );
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return (
+      <View className='w-full h-full flex items-center justify-center'>
+        <Text className='text-zinc-300 text-2xl'>
+          no access to camera
+        </Text>
+      </View>
+    )
   }
 
   return (
-    <View>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={{}}
-      />
+    <View className='w-full h-full relative'>
+      <View className='w-full h-full border-8 border-gray-900 rounded-3xl absolute top-0 left-0 z-10'/>
+      <View className='w-full h-full p-2'>
+        <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          className='w-full h-full'
+        />
+      </View>
     </View>
   )
 }

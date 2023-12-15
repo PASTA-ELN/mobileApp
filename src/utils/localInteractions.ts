@@ -1,13 +1,26 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createHash } from 'node:crypto'
+import * as Crypto from 'expo-crypto'
 import { Credentials } from "types/Credentials";
 
 //-------------------------------------------------------------------------------------------------
 // Keys
 //-------------------------------------------------------------------------------------------------
-const ontologyKey  = createHash('sha256').update(`key_ontology_${Math.random()}`).digest('hex');
-const dataTypesKey = createHash('sha256').update(`key_dataTypes_${Math.random()}`).digest('hex');
-const credentialsKey = createHash('sha256').update(`key_credentials_${Math.random()}`).digest('hex');
+let ontologyKey   : string;
+let dataTypesKey  : string;
+let credentialsKey: string;
+
+(function initKeys() {
+  Promise.all([
+    Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, 'key_ontology').then(key => ontologyKey = key),
+    Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, 'key_dataTypes').then(key => dataTypesKey = key),
+    Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, 'key_credentials').then(key => credentialsKey = key),
+  ])
+  .then(() => console.log('Keys initialized'))
+  .catch(err => {
+    console.error('Error initializing keys', err)
+    process.exit(1);
+  });
+})();
 
 //-------------------------------------------------------------------------------------------------
 // Ontology

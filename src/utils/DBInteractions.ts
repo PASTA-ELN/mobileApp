@@ -22,13 +22,13 @@ export async function initDB(credentials: Credentials) {
       timeout: 5000,
     });
 
-    const response = await instance.get('/-ontology-');
+    const response = await instance.get('/-dataHierarchy-');
     if(response.status !== 200){
       return Promise.reject(response.statusText);
     }
 
     if(!checkOntology(response.data)){
-      return Promise.reject('Invalid ontology');
+      return Promise.reject('Invalid dataHierarchy');
     }
 
     saveOntology(response.data);
@@ -81,7 +81,7 @@ export async function getDocumentFromQRCode(Code: string) {
 export async function checkCredentials(credentials: Credentials) {
   try {
     const response = await Axios.get(
-      `http://${credentials.server}:5984/${credentials.database}/-ontology-`, {
+      `http://${credentials.server}:5984/${credentials.database}/-dataHierarchy-`, {
       auth: {
         username: credentials.username,
         password: credentials.password
@@ -91,6 +91,7 @@ export async function checkCredentials(credentials: Credentials) {
     return Promise.resolve()
   }
   catch (err: any) {
+    console.error(err);
     if(!err.response)
       return Promise.reject('no server connection');
 

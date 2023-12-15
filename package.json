@@ -4,28 +4,39 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start --dev-client --tunnel",
-    "rebuild": "expo prebuild --clean"
+    "rebuild": "expo prebuild --clean",
+    "build:ios": "eas build --platform ios --profile development",
+    "build:android": "eas build --platform android --profile development"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.6.2",
+    "base-64": "^1.0.0",
     "expo": "~49.0.15",
+    "expo-barcode-scanner": "~12.5.3",
     "expo-constants": "~14.4.2",
+    "expo-crypto": "~12.4.1",
+    "expo-dev-client": "~2.4.12",
+    "expo-image": "~1.3.5",
     "expo-status-bar": "~1.6.0",
+    "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-check-box": "^2.1.7",
+    "react-native-root-toast": "^3.5.1",
     "react-redux": "^9.0.3",
     "react-router-native": "^6.20.1",
     "redux": "^5.0.0",
-    "expo-barcode-scanner": "~12.5.3"
+    "typescript": "^5.1.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@types/base-64": "^1.0.2",
     "@types/react": "^18.2.43",
-    "@types/react-native-check-box": "^2.1.5"
+    "@types/react-native-check-box": "^2.1.5",
+    "tailwindcss": "^3.3.2"
   },
   "private": true,
   "overrides": {

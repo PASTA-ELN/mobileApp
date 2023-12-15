@@ -3,7 +3,7 @@
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
@@ -26,7 +26,6 @@
     "strict": true,
     "target": "esnext",
     "typeRoots": [
-      "./types", 
       "./node_modules/@types"
     ]
   },
@@ -34,11 +33,12 @@
     "node_modules",
     "babel.config.js",
     "metro.config.js",
-    "jest.config.js"
+    "jest.config.js",
+    "tailwind.config.js",
   ],
   "include": [
     "src",
     "types",
-    "App.tsx", 
+    "App.tsx" 
   ]
 }

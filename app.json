@@ -4,7 +4,7 @@
   "expo": {
     "name": "Pasta",
     "slug": "Pasta",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -12,6 +12,9 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "experiments": {
+      "tsconfigPaths": true
     },
     "plugins": [
       [
@@ -48,7 +51,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "eac174ae-81ed-437e-a814-eda9d8887c6b"
+        "projectId": "52325add-30e1-4acf-83d5-a2a3161f704e"
       }
     }
   }

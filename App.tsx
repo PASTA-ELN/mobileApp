@@ -1,37 +1,35 @@
+import 'expo-dev-client'
+import './app'
+
+import { SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View } from 'react-native'
-import { NativeRouter, Route } from 'react-router-native';
 import Constants from 'expo-constants';
+import { Provider as ReduxProvider } from 'react-redux';
+import { RootSiblingParent } from 'react-native-root-siblings';
+import { encode, decode } from 'base-64';
 
-import { useAppSelector } from 'store';
-
-import Home from 'pages/Home';
-import Login from 'pages/Login';
+import { store } from 'store';
+import Main from 'src/main';
 
 global.version = Constants.expoConfig?.version || "0.0.0";
+if (!global.btoa) {
+  global.btoa = encode;
+  }
+  
+  if (!global.atob) {
+  global.atob = decode;
+  }
 
 export default function App() {
 
-  const loggedIn = useAppSelector(state => state.Login.loggedIn);
-
-  if(loggedIn){
-    return (
-      <NativeRouter>
-        <Route path="/" Component={Home} />
-      </NativeRouter>
-    )
-  }
-
   return (
-    <Login /> 
+    <ReduxProvider store={store}>
+      <RootSiblingParent>
+        <SafeAreaView className='w-screen h-screen dark bg-gray-800'>
+          <Main />
+          <StatusBar style="light" />
+        </SafeAreaView>
+      </RootSiblingParent>
+    </ReduxProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

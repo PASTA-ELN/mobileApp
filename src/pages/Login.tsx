@@ -35,11 +35,13 @@ export default function(props: IProps) {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View>
-        <View>
+      <View className='w-full h-full'>
+        <View className='w-full h-full flex items-center justify-center'>
           <LoginForm submit={(credentials) => dispatch(login(credentials))} />
         </View>
-        <Text>Version {global.version}</Text>
+        <Text className='text-zinc-600 ml-4'>
+          Version {global.version}
+        </Text>
       </View>
     </TouchableWithoutFeedback>
   )
