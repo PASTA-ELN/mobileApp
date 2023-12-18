@@ -25,7 +25,7 @@ export default function App() {
   return (
     <ReduxProvider store={store}>
       <RootSiblingParent>
-        <SafeAreaView className='w-screen h-screen dark bg-gray-800'>
+        <SafeAreaView className='w-screen h-screen dark bg-gray-900'>
           <Main />
           <StatusBar style="light" />
         </SafeAreaView>

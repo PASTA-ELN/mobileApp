@@ -1,7 +1,7 @@
 import React from 'react'
 import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native'
 
-import { loadCredentials } from 'utils/localInteractions';
+import { getCredentials } from 'utils/localInteractions';
 import { useAppDispatch } from 'store';
 import { login, relogin } from 'store/reducer/Login';
 import LoginForm from 'components/LoginForm';
@@ -15,10 +15,10 @@ export default function(props: IProps) {
   const dispatch = useAppDispatch();
 
   React.useEffect(() => {
-    loadCredentials()
-      .then((credentials) => {
-        if(credentials){
-          dispatch(relogin(credentials))
+    getCredentials('default')
+      .then((config) => {
+        if(config){
+          dispatch(relogin(config))
             .then(() => setIsLoading(false));
         }
         else {

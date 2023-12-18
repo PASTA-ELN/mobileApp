@@ -1,17 +1,28 @@
-
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Alert, Text, View } from 'react-native'
+
+import CameraComponent from 'components/CameraComponent'
 
 type IProps = {
 
 }
 export default function(props: IProps) {
-
   return (
-    <View>
-      <Text>
-        Camera
-      </Text>
-    </View>
+    <CameraComponent 
+      handleBarcodeScanned={(data, retry) => {
+        Alert.alert(
+          "Barcode Scanned",
+          `Data: ${data.data}`,
+          [
+            {
+              text: "Cancel",
+              onPress: () => retry(),
+              style: "cancel"
+            },
+            { text: "OK", onPress: () => console.log("OK Pressed") }
+          ]
+        )
+      }}
+    />
   )
 }

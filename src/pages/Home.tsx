@@ -2,43 +2,44 @@ import React from "react"
 import { Text, View } from "react-native"
 import { Link } from "react-router-native";
 
-import { getDataTypes } from "utils/localInteractions"
+import { useDataHierarchy, useDataTypes } from "hooks/localstorage";
 
 type IProps = {
 
 }
 export default function(props: IProps) {
 
-  const [dataTypes, setDataTypes] = React.useState<string[]>([]);
+  const dataTypes = useDataTypes();
+  const dataHierarchy = useDataHierarchy();
 
-  React.useEffect(() => {
-    getDataTypes().then(dataTypes => {
-      if(dataTypes){
-        setDataTypes(dataTypes);
-      }
-    });
-  }, []);
+  if(dataTypes.length === 0 || Object.keys(dataHierarchy).length === 0) return (<View></View>);
 
   const items = dataTypes
     .filter(dataType => !dataType.startsWith('-'))
     .filter(dataType => !dataType.startsWith('x'))
     .map((dataType) => {
+
+      const title = dataHierarchy[dataType].title;
+
       return (
-        <Link to={`/table/${dataType}`}>
-          <View 
-            key={`${dataType}-li`}
-            className="w-full h-fit flex flex-row justify-between items-center bg-gray-700 rounded-3xl p-4 mb-4"  
-          >
-            <Text className="text-zinc-300 text-xl">
-              {dataType}
+        <Link 
+          to={`/table/${dataType}`} 
+          key={`${dataType}-link`} 
+          underlayColor="rgba(255,255,255,0.1)"
+          className="w-full h-fit flex flex-row justify-between items-center bg-gray-800 rounded-3xl p-4 mb-4"  
+        >
+            <Text className="text-blue-500 text-xl" key={`${dataType}-text`}>
+              {title}
             </Text>
-          </View>
         </Link>
       )
     });
 
   return (
     <View className="w-full h-full p-4">
+      <View className="w-full h-fit p-2">
+        <Text className="text-zinc-300 text-4xl font-bold">Data</Text>
+      </View>
       {items}
     </View>
   )

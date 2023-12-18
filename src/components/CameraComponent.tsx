@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 type IProps = {
   handleBarcodeScanned: (result: BarCodeScannerResult, retry: () => void) => void;
+  bordered?: boolean;
 }
 export default function(props: IProps) {
   const [hasPermission, setHasPermission] = React.useState<boolean>(false);
@@ -42,15 +43,23 @@ export default function(props: IProps) {
     )
   }
 
-  return (
-    <View className='w-full h-full relative'>
-      <View className='w-full h-full border-8 border-gray-900 rounded-3xl absolute top-0 left-0 z-10'/>
-      <View className='w-full h-full p-2'>
-        <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          className='w-full h-full'
-        />
+  if(props.bordered)
+    return (
+      <View className='w-full h-full relative'>
+        <View className='w-full h-full border-8 border-gray-900 rounded-3xl absolute top-0 left-0 z-10'/>
+        <View className='w-full h-full p-2'>
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            className='w-full h-full'
+          />
+        </View>
       </View>
-    </View>
+    )
+
+  return (
+    <BarCodeScanner
+      onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+      className='w-full h-full'
+    />
   )
 }

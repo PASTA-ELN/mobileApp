@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import Axios, { type AxiosResponse } from 'axios'
 
 import { type Credentials } from 'types/Credentials'
-import { checkOntology, saveOntology } from 'utils/localInteractions'
+import { checkDataHierarchy, saveDataHierarchy } from 'utils/localInteractions'
 
 //-------------------------------------------------------------------------------------------------
 // Database
@@ -27,11 +27,11 @@ export async function initDB(credentials: Credentials) {
       return Promise.reject(response.statusText);
     }
 
-    if(!checkOntology(response.data)){
+    if(!checkDataHierarchy(response.data)){
       return Promise.reject('Invalid dataHierarchy');
     }
 
-    saveOntology(response.data);
+    saveDataHierarchy(response.data);
     global.axios = instance;
     return Promise.resolve();
   }
@@ -69,6 +69,44 @@ export async function getDocumentFromQRCode(Code: string) {
       return Promise.reject('multiple documents found');
     
     return Promise.resolve(docs[0]);
+  }
+  catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export async function getDocumentFromId(id: string): Promise<Record<string, any>> {
+  try {
+    if(!global.axios){
+      return Promise.reject('no server connection');
+    }
+
+    const response = await global.axios.get(id);
+
+    if(response.status !== 200){
+      return Promise.reject(response.statusText);
+    }
+
+    return Promise.resolve(response.data);
+  }
+  catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+export async function getDataForType(type: string): Promise<any[]> {
+  try {
+    if(!global.axios){
+      return Promise.reject('no server connection');
+    }
+
+    const response = await global.axios.get(`_design/viewDocType/_view/${type}`);
+
+    if(response.status !== 200){
+      return Promise.reject(response.statusText);
+    }
+
+    return Promise.resolve(response.data.rows);
   }
   catch (err) {
     return Promise.reject(err);

@@ -40,3 +40,4 @@ android/
 
 #credentils
 credentials.*
+!credentials.ts

@@ -95,6 +95,7 @@ export default function(props: IProps) {
           <View className='w-full h-[90%] bg-gray-800 rounded-3xl'>
             <CameraComponent 
               handleBarcodeScanned={handleBarcodeScanned}
+              bordered
             />
           </View>
           <Button title='Cancel' onPress={() => setScanQR(false)}/>
@@ -104,7 +105,7 @@ export default function(props: IProps) {
   }
 
   return (
-    <View className='w-3/4 h-fit border border-gray-950 bg-gray-900 text-zinc-200 rounded-3xl px-2 pt-4 pb-2'>
+    <View className='w-3/4 h-fit bg-gray-900 text-zinc-200 rounded-3xl px-2 pt-4 pb-2'>
       <View className='w-full h-1/8 flex flex-row items-center justify-center'>
         <Image source={require('assets/adaptive-icon.png')} className='w-20 h-20'/>
         <Text className='text-zinc-200 text-[50px]'>PASTA</Text>

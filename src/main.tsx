@@ -9,6 +9,7 @@ import Config from 'pages/Config';
 import Home from 'pages/Home';
 import Login from 'pages/Login';
 import Table from 'pages/Table';
+import Data from 'pages/Data';
 
 
 export default function(){
@@ -20,10 +21,11 @@ export default function(){
         <NativeRouter>
           <Header />
           <Routes>
-            <Route path="/" Component={Home} />
-            <Route path="/camera" Component={Camera} />
-            <Route path="/config" Component={Config} />
+            <Route path="/"                Component={Home} />
+            <Route path="/camera"          Component={Camera} />
+            <Route path="/config"          Component={Config} />
             <Route path="/table/:dataType" Component={Table} />
+            <Route path="/data/:id"        Component={Data} />
           </Routes>
         </NativeRouter>
       </View>
