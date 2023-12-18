@@ -32,7 +32,7 @@ export default function() {
   const title = dataHierarchy[dataType!].title;
   const items = data.map((item, index) => {
     return (
-      <Link to={`/data/${item.id}`} key={`${dataType}-link-${index}`}>
+      <Link to={`/data/${dataType}/${item.id}`} key={`${dataType}-link-${index}`}>
         <View 
           className='w-full h-fit rounded-3xl bg-gray-800 p-4 mb-4'
           key={`${dataType}-li-${index}`}

@@ -1,24 +1,38 @@
 import React from 'react'
-import { Text, View } from 'react-native'
-import {} from 'react-native-svg'
+import { Image, Text, View } from 'react-native'
+import {SvgFromXml} from 'react-native-svg'
 
 type IProps = {
   data: string
 }
 export default function(props: IProps) {
 
-  console.log(props.data.slice(0, 100))
-
   /** SVG */
-  if(props.data.startsWith(''))
+  if(props.data.startsWith('<?xml'))
+    //TODO there seems to be some padding because the aspect is not 1:1 
     return (
-      <View>
-
-      </View>
+      <SvgFromXml xml={props.data} width="100%"/>
     )
-  return (
-    <View>
 
+  /** Image URI */
+  if(props.data.startsWith('data:image')){
+    /**base64 */
+    if(props.data.split(';')[1].startsWith('base64'))
+      return (
+        <View className='w-full aspect-square'>
+          <Image source={{uri: props.data}} className="w-full h-full"/>
+        </View>
+      )
+
+    //TODO other Image URI encodings
+  }
+
+  /** Unsupported Types */
+  return (
+    <View className='w-full h-fit p-4'>
+      <Text className='text-zinc-300 text-xl'>
+        Unsupported Image Type
+      </Text>
     </View>
   )
 }

@@ -23,7 +23,7 @@ export default function(props: IProps) {
 
       return (
         <Link 
-          to={`/table/${dataType}`} 
+          to={`/data/${dataType}`} 
           key={`${dataType}-link`} 
           underlayColor="rgba(255,255,255,0.1)"
           className="w-full h-fit flex flex-row justify-between items-center bg-gray-800 rounded-3xl p-4 mb-4"  

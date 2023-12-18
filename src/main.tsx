@@ -21,11 +21,11 @@ export default function(){
         <NativeRouter>
           <Header />
           <Routes>
-            <Route path="/"                Component={Home} />
-            <Route path="/camera"          Component={Camera} />
-            <Route path="/config"          Component={Config} />
-            <Route path="/table/:dataType" Component={Table} />
-            <Route path="/data/:id"        Component={Data} />
+            <Route path="/"                   Component={Home} />
+            <Route path="/camera"             Component={Camera} />
+            <Route path="/config"             Component={Config} />
+            <Route path="/data/:dataType"     Component={Table} />
+            <Route path="/data/:dataType/:id" Component={Data} />
           </Routes>
         </NativeRouter>
       </View>
