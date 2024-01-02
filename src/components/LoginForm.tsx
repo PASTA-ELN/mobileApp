@@ -4,7 +4,7 @@ import { Toast } from 'utils/toast'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { type BarCodeScannerResult } from 'expo-barcode-scanner'
 
-import Input from './Input'
+import Input from './UI/Input'
 import CameraComponent from './CameraComponent'
 import { type CredentialsConfig } from 'types/Credentials'
 

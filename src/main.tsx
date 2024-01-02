@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { NativeRouter, Route, Routes } from 'react-router-native';
 
 import { useAppSelector } from 'store';
-import Header from 'components/Header';
+import Header from 'components/UI/Header';
 
 import Camera from 'pages/Camera';
 import Config from 'pages/Config';

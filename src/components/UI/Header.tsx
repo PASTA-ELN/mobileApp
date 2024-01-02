@@ -10,8 +10,8 @@ type IProps = {
 export default function(props: IProps) {
 
   return (
-    <View className='w-full h-14 bg-gray-800 flex flex-row'>
-      <View className='w-1/3 h-full flex flex-row items-center px-2'>
+    <View className='w-full h-14 bg-gray-800 flex flex-row px-4'>
+      <View className='w-1/3 h-full flex flex-row items-center'>
         <Link to="/" underlayColor="rgba(255,255,255,0.1)">
           <Ionicons name="ios-home-outline" size={32} color="rgb(212,212,216)"/>
         </Link>
@@ -27,7 +27,7 @@ export default function(props: IProps) {
           </Text>
         </Link>
       </View>
-      <View className='w-1/3 h-full flex flex-row items-center justify-end px-2'>
+      <View className='w-1/3 h-full flex flex-row items-center justify-end'>
         <Link to="/config" underlayColor="rgba(255,255,255,0.1)">
           <Ionicons name="ios-settings-outline" size={32} color="rgb(212,212,216)" />
         </Link>

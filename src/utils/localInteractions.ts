@@ -8,18 +8,35 @@ import { Credentials, CredentialsConfig } from "types/Credentials";
 let dataHierarchyKey : string;
 let dataTypesKey     : string;
 let credentialsKey   : string;
+let autologinKey     : string;
 
 (function initKeys() {
   Promise.all([
     Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, 'key_dataHierarchy').then(key => dataHierarchyKey = key),
     Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, 'key_dataTypes').then(key => dataTypesKey = key),
     Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, 'key_credentials').then(key => credentialsKey = key),
+    Crypto.digestStringAsync(Crypto.CryptoDigestAlgorithm.SHA256, 'key_autologin').then(key => autologinKey = key),
   ])
+  .then(initialize)
   .catch(err => {
     console.error('Error initializing keys', err)
     process.exit(1);
   });
 })();
+
+//-------------------------------------------------------------------------------------------------
+// Init Local Storage
+//-------------------------------------------------------------------------------------------------
+async function initialize(){
+  if(await AsyncStorage.getItem(dataHierarchyKey)) {
+    return;
+  }
+
+  await AsyncStorage.setItem(dataHierarchyKey, JSON.stringify({}));
+  await AsyncStorage.setItem(dataTypesKey, JSON.stringify([]));
+  await AsyncStorage.setItem(credentialsKey, JSON.stringify({}));
+  await AsyncStorage.setItem(autologinKey, JSON.stringify(true));
+}
 
 //-------------------------------------------------------------------------------------------------
 // Ontology
@@ -95,4 +112,19 @@ export async function loadCredentials(): Promise<Record<string, Credentials>|nul
     return JSON.parse(data);
   }
   return null;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Autlogin
+//-------------------------------------------------------------------------------------------------
+export async function saveAutologin(autologin: boolean) {
+  return AsyncStorage.setItem('autologin', JSON.stringify(autologin));
+}
+export async function loadAutologin(): Promise<boolean> {
+  const data = await AsyncStorage.getItem('autologin');
+
+  if(data) {
+    return JSON.parse(data);
+  }
+  return false;
 }
