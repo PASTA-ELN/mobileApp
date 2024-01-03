@@ -34,7 +34,7 @@ export default function() {
           underlayColor="rgba(255,255,255,0.1)"
           className="w-full h-fit flex flex-row justify-between items-center bg-gray-800 rounded-3xl p-4 mb-4"  
         >
-            <Text className="text-blue-500 text-xl" key={`${dataType}-text`}>
+            <Text className="text-zinc-400 text-xl" key={`${dataType}-text`}>
               {title}
             </Text>
         </Link>

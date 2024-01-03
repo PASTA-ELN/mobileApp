@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image, Text, View } from 'react-native'
-import {SvgFromXml} from 'react-native-svg'
+import { SvgFromXml } from 'react-native-svg'
 
 //
 // Component Props

@@ -4,7 +4,7 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import { Link, useParams } from 'react-router-native'
 
-import { getDataForType, getDocumentFromId } from 'utils/DBInteractions';
+import { getDataForType } from 'utils/DBInteractions';
 
 //
 // Component
@@ -48,18 +48,18 @@ export default function() {
   const title = dataHierarchy[dataType!].title;
   const items = data.map((item, index) => { //TODO: move to own component
     return (
-      <Link to={`/data/${item.id}?type=${dataType}`} key={`${dataType}-link-${index}`}>
-        <View 
-          className='w-full h-fit rounded-3xl bg-gray-800 p-4 mb-4'
-          key={`${dataType}-li-${index}`}
+      <Link 
+        className='w-full h-fit rounded-3xl bg-gray-800 p-4 mb-4'
+        to={`/data/${item.id}?type=${dataType}`} 
+        key={`${dataType}-link-${index}`}
+        underlayColor="rgba(255,255,255,0.1)"
+      >
+        <Text 
+          className='text-zinc-300'
+          key={`${dataType}-text-${index}`}  
         >
-          <Text 
-            className='text-zinc-300'
-            key={`${dataType}-text-${index}`}  
-          >
-            {item.value[0]}
-          </Text>
-        </View>
+          {item.value[0]}
+        </Text>
       </Link>
     )
   })
