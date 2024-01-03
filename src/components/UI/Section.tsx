@@ -1,16 +1,25 @@
 import React from 'react'
 import { View } from 'react-native'
 
+//
+// Component Props
+//
 type IProps = {
   children: React.ReactNode;
 }
+//
+// Component
+//
 export default function(props: IProps){
-
+  //
+  // Vars
+  //
   const childrenArray = React.Children.toArray(props.children);
   const items = childrenArray.map((child, index) => {
-
     const id = React.useId();
-
+    //
+    // Render
+    //
     return (
       <View className='w-full h-fit' key={`Section_${id}_container_${index}`}>
         {child}
@@ -20,7 +29,9 @@ export default function(props: IProps){
       </View>
     )
   });
-
+  //
+  // Render
+  //
   return (
     <View className='w-full h-fit rounded-2xl mt-4 bg-gray-800'>
       {items}

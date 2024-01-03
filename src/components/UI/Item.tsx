@@ -2,6 +2,9 @@ import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import Icon from '@expo/vector-icons/Ionicons'
 
+//
+// Component Props
+//
 type IProps = {
   children: React.ReactNode;
   onPress: () => void;
@@ -11,8 +14,14 @@ type IProps = {
   endContent: React.ReactNode;
   variant: 'switch'
 }
+//
+// Component
+//
 export default function(props: IProps){
 
+  //
+  // Render Item with Switch
+  //
   if(props.variant === 'switch')
     return (
       <View className='p-2 pr-4 flex flex-row items-center justify-between'>
@@ -23,6 +32,9 @@ export default function(props: IProps){
       </View>
     )
 
+  //
+  // Render Item as Button
+  //
   return (
     <TouchableOpacity className='p-2 pr-4 flex flex-row items-center justify-between' onPress={props.onPress}>
       <View className='flex flex-row items-center'>

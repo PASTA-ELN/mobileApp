@@ -11,10 +11,20 @@ import Login from 'pages/Login';
 import Table from 'pages/Table';
 import Data from 'pages/Data';
 
+import 'react-native-url-polyfill/auto';
 
+//
+// Component
+//
 export default function(){
+  //
+  // State
+  //
   const loggedIn = useAppSelector(state => state.Login.loggedIn);
 
+  //
+  // Render App
+  //
   if(loggedIn){
     return (
       <View className='w-full h-full'>
@@ -24,13 +34,16 @@ export default function(){
             <Route path="/"                   Component={Home} />
             <Route path="/camera"             Component={Camera} />
             <Route path="/config"             Component={Config} />
-            <Route path="/data/:dataType"     Component={Table} />
-            <Route path="/data/:dataType/:id" Component={Data} />
+            <Route path="/table/:dataType"    Component={Table} />
+            <Route path="/data/:id"           Component={Data} />
           </Routes>
         </NativeRouter>
       </View>
     )
   }
+  //
+  // Render Login Screen
+  //
   return (
     <Login />
   )

@@ -2,15 +2,19 @@ import React from 'react'
 import { useDataHierarchy } from 'hooks/localstorage'
 import { Text, View } from 'react-native'
 
-type IProps = {
-
-}
-export default function(props: IProps){
-
+//
+// Component
+//
+export default function(){
+  //
+  // Hook calls
+  //
   const dataHierarchy = useDataHierarchy()
 
   console.log(dataHierarchy);
-
+  //
+  // Render
+  //
   return (
     <View >
       <Text>TODO</Text>

@@ -3,12 +3,11 @@ import { Text, View } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { Link } from 'react-router-native'
 
-type IProps = {
+export default function() {
 
-}
-
-export default function(props: IProps) {
-
+  //
+  // Render
+  //
   return (
     <View className='w-full h-14 bg-gray-800 flex flex-row px-4'>
       <View className='w-1/3 h-full flex flex-row items-center'>

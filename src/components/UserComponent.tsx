@@ -1,14 +1,22 @@
 import React from 'react'
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
 
 import { type CredentialsConfig } from 'types/Credentials'
 
+//
+// Component Props
+//
 type IProps = {
   usedCredentials: CredentialsConfig
 }
+//
+// Component
+//
 export default function(props: IProps) {
-
+  //
+  // Render
+  //
   return (
     <View className='w-full h-fit bg-gray-800 rounded-xl flex flex-col pl-4'>
       <View className='w-full h-20 flex flex-row items-center py-2'>

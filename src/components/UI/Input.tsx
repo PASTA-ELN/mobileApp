@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, TextInput } from 'react-native';
 
+//
+// component Props
+//
 type IProps = {
   onSubmit: () => void;
   onTextChange: (text: string) => void;
@@ -8,10 +11,17 @@ type IProps = {
   type?: 'text' | 'password'
   value: string;
 }
+//
+// Component
+//
 function input(props: IProps, ref: React.Ref<TextInput>) {
-
+  //
+  // State
+  //
   const [hideText, setHideText] = React.useState<boolean>(props.type === 'password');
-
+  //
+  // Render
+  //
   return (
     <View
       className='p-2 bg-gray-800 w-full h-fit rounded-lg mb-2'
@@ -32,4 +42,7 @@ function input(props: IProps, ref: React.Ref<TextInput>) {
   )
 }
 
+//
+// The Component forwards the passed ref to the underlying TextInput
+//
 export default React.forwardRef(input);

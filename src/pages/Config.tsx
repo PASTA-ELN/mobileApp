@@ -9,28 +9,38 @@ import Section from 'components/UI/Section'
 import Item from 'components/UI/Item'
 import { useDataHierarchy } from 'hooks/localstorage'
 
-type IProps = {
-
-}
-export default function(props: IProps) {
-
+//
+// Component
+//
+export default function() {
+  //
+  // State
+  //
   const [autologinState, setAutologinState] = useAutologinState();
   const [showDataHierarchy, setShowDataHierarchy] = React.useState(false);
+  const [showAddConfig, setShowAddConfig] = React.useState(false);
+  //
+  // Hook calls
+  //
   const localCredentials = useLocalCredentials();
   const credentialsKeys = Object.keys(localCredentials);
   const dataHierarchy = useDataHierarchy();
 
+  //
+  // Vars
+  //
   if (credentialsKeys.length === 0) {
     return <View></View>
   }
-  
   const usedCredentials = {
     configName: 'default',
     credentials: localCredentials['default']
   };
 
+  //
+  // Show Data Hierarchy
+  //
   if(showDataHierarchy){
-
     const items = Object.entries(dataHierarchy).map(([key, value], index) => {
       return (
         //TODO replace with collapsible component
@@ -56,6 +66,18 @@ export default function(props: IProps) {
     )
   }
 
+  //
+  // Show Add Config
+  //
+  if(showAddConfig){
+    return (
+      <View></View>
+    )
+  }
+  
+  //
+  // Render
+  //
   return (
     <View className='w-full h-full p-4 flex flex-col items-center justify-start'>
       <View className='w-full h-fit mb-4'>

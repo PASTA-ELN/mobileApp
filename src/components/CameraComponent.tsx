@@ -2,28 +2,43 @@ import React from 'react';
 import { BarCodeScanner, type BarCodeScannerResult } from 'expo-barcode-scanner'
 import { Text, View } from 'react-native';
 
+//
+// Component Props
+//
 type IProps = {
   handleBarcodeScanned: (result: BarCodeScannerResult, retry: () => void) => void;
   bordered?: boolean;
 }
+//
+// Component
+//
 export default function(props: IProps) {
+  //
+  // State
+  //
   const [hasPermission, setHasPermission] = React.useState<boolean>(false);
   const [scanned, setScanned] = React.useState<boolean>(false);
 
+  //
+  // Functions
+  //
   async function getBarCodeScannerPermissions() {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
     setHasPermission(status === 'granted');
   }
-
-  React.useEffect(() => {
-    getBarCodeScannerPermissions()
-  }, []);
-
   function handleBarCodeScanned(result: BarCodeScannerResult) {
     setScanned(true);
     props.handleBarcodeScanned(result, () => setScanned(false));
   }
-
+  //
+  // Effects
+  //
+  React.useEffect(() => {
+    getBarCodeScannerPermissions()
+  }, []);
+  //
+  // Render loading
+  //
   if (hasPermission === null) {
     return (
       <View className='w-full h-full flex items-center justify-center'>
@@ -33,6 +48,9 @@ export default function(props: IProps) {
       </View>
     );
   }
+  //
+  // Render invalid permissions
+  //
   if (hasPermission === false) {
     return (
       <View className='w-full h-full flex items-center justify-center'>
@@ -42,7 +60,9 @@ export default function(props: IProps) {
       </View>
     )
   }
-
+  //
+  // Render bordered Camera View (small)
+  //
   if(props.bordered)
     return (
       <View className='w-full h-full relative'>
@@ -55,7 +75,9 @@ export default function(props: IProps) {
         </View>
       </View>
     )
-
+  //
+  // Render Camera View (full)
+  //
   return (
     <BarCodeScanner
       onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}

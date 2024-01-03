@@ -8,38 +8,39 @@ import Input from './UI/Input'
 import CameraComponent from './CameraComponent'
 import { type CredentialsConfig } from 'types/Credentials'
 
+//
+// Component Props
+//
 type IProps = {
   submit: (credentials: CredentialsConfig) => void;
 }
-
+//
+// Component
+//
 export default function(props: IProps) {
 
-  /**
-   * References to the input fields
-   */
+  //
+  // Refs
+  //
   const usernameInput = React.useRef<TextInput>(null!);
   const passwordInput = React.useRef<TextInput>(null!);
   const serverInput   = React.useRef<TextInput>(null!);
   const databaseInput = React.useRef<TextInput>(null!);
   const configInput   = React.useRef<TextInput>(null!);
 
-  /**
-   * State for the input fields
-   */
+  //
+  // State
+  //
   const [username, setUsername] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [database, setDatabase] = React.useState<string>('');
   const [server,   setServer]   = React.useState<string>('');
   const [config,   setConfig]   = React.useState<string>('default');
-
-  /**
-   * Misc State
-   */
   const [scanQR, setScanQR] = React.useState<boolean>(false);
 
-  /**
-   * functions
-   */
+  //
+  // Functions
+  //
   function submit() {
     if(!username || !password || !database || !server || !config){
       Toast.error('Please fill out all fields');
@@ -55,7 +56,6 @@ export default function(props: IProps) {
       }
     })
   }
-
   function handleBarcodeScanned(result: BarCodeScannerResult, retry: () => void): void {
     try {
       const { credentials, configname } = JSON.parse(result.data);
@@ -88,6 +88,9 @@ export default function(props: IProps) {
     }
   }
 
+  //
+  // Render Scan QR
+  //
   if(scanQR){
     return (
       <View className='w-full h-full flex flex-col p-2 items-center justify-center'>
@@ -103,7 +106,9 @@ export default function(props: IProps) {
       </View>
     )
   }
-
+  //
+  // Render
+  //
   return (
     <View className='w-3/4 h-fit bg-gray-900 text-zinc-200 rounded-3xl px-2 pt-4 pb-2'>
       <View className='w-full h-1/8 flex flex-row items-center justify-center'>

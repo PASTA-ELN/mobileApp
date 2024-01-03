@@ -4,17 +4,23 @@ import { Link } from "react-router-native";
 
 import { useDataHierarchy, useDataTypes } from "hooks/localstorage";
 
-type IProps = {
-
-}
-export default function(props: IProps) {
-
+//
+// Component
+//
+export default function() {
+  //
+  // Hook calls
+  //
   const dataTypes = useDataTypes();
   const dataHierarchy = useDataHierarchy();
 
-  if(dataTypes.length === 0 || Object.keys(dataHierarchy).length === 0) return (<View></View>);
+  //
+  // Render empty if no data
+  //
+  if(dataTypes.length === 0 || Object.keys(dataHierarchy).length === 0) 
+    return (<View></View>);
 
-  const items = dataTypes
+  const items = dataTypes //TODO: move to own component
     .filter(dataType => !dataType.startsWith('-'))
     .filter(dataType => !dataType.startsWith('x'))
     .map((dataType) => {
@@ -23,7 +29,7 @@ export default function(props: IProps) {
 
       return (
         <Link 
-          to={`/data/${dataType}`} 
+          to={`/table/${dataType}`} 
           key={`${dataType}-link`} 
           underlayColor="rgba(255,255,255,0.1)"
           className="w-full h-fit flex flex-row justify-between items-center bg-gray-800 rounded-3xl p-4 mb-4"  
@@ -34,7 +40,10 @@ export default function(props: IProps) {
         </Link>
       )
     });
-
+  
+  //
+  // Render
+  //
   return (
     <View className="w-full h-full p-4">
       <View className="w-full h-fit p-2">

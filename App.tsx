@@ -11,7 +11,16 @@ import { encode, decode } from 'base-64';
 import { store } from 'store';
 import Main from 'src/main';
 
-global.version = Constants.expoConfig?.version || "0.0.0";
+//
+// Global variables
+//
+global.version = Constants.expoConfig?.version || '0.0.0';
+global.build = Constants.expoConfig?.extra?.build || '0';
+global.env = Constants.expoConfig?.extra?.env || 'development';
+
+//
+// BASE64 polyfill for axios
+//
 if (!global.btoa) {
   global.btoa = encode;
   }
@@ -20,8 +29,13 @@ if (!global.btoa) {
   global.atob = decode;
   }
 
+//
+// Component
+//
 export default function App() {
-
+  //
+  // Render
+  //
   return (
     <ReduxProvider store={store}>
       <RootSiblingParent>
