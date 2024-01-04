@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native'
 import MUIIcon from '@expo/vector-icons/MaterialCommunityIcons'
 import IOIcon from '@expo/vector-icons/Ionicons'
 
@@ -8,6 +8,7 @@ import UserComponent from 'components/UserComponent'
 import Section from 'components/UI/Section'
 import Item from 'components/UI/Item'
 import { useDataHierarchy } from 'hooks/localstorage'
+import { useNavigate } from 'react-router-native'
 
 //
 // Component
@@ -25,6 +26,7 @@ export default function() {
   const localCredentials = useLocalCredentials();
   const credentialsKeys = Object.keys(localCredentials);
   const dataHierarchy = useDataHierarchy();
+  const navigate = useNavigate();
 
   //
   // Vars
@@ -110,6 +112,14 @@ export default function() {
             <IOIcon name="remove-sharp" size={26} color='white'/>
             </View>
           <Text className='text-zinc-400 text-[16px] ml-5'>remove config</Text>
+        </Item>
+      </Section>
+      <Section>
+        <Item variant='button' onPress={() => navigate('/info')}>
+          <View className='bg-yellow-500 rounded-lg p-[1]'>
+            <IOIcon name="information-circle-outline" size={26} color='white'/>
+          </View>
+          <Text className='text-zinc-400 text-[16px] ml-5'>info</Text>
         </Item>
       </Section>
     </View>

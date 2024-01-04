@@ -12,6 +12,7 @@ import Table from 'pages/Table';
 import Data from 'pages/Data';
 
 import 'react-native-url-polyfill/auto';
+import Info from 'pages/Info';
 
 //
 // Component
@@ -31,11 +32,12 @@ export default function(){
         <NativeRouter>
           <Header />
           <Routes>
-            <Route path="/"                   Component={Home} />
+            <Route path="/"                   Component={Home}   />
             <Route path="/camera"             Component={Camera} />
             <Route path="/config"             Component={Config} />
-            <Route path="/table/:dataType"    Component={Table} />
-            <Route path="/data/:id"           Component={Data} />
+            <Route path="/table/:dataType"    Component={Table}  />
+            <Route path="/data/:id"           Component={Data}   />
+            <Route path="/info"               Component={Info}   />
           </Routes>
         </NativeRouter>
       </View>

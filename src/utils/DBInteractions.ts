@@ -40,20 +40,21 @@ export async function initDB(credentials: Credentials) {
   }
 }
 
-export async function getDocumentFromQRCode(Code: string) {
+export async function getDocumentFromQRCode(Code: string): Promise<string> {
   try {
     if(!global.axios){
       return Promise.reject('no server connection');
     }
 
-    var docs;
-    const response = await global.axios.get(`_design/viewIdentify/_view/viewQR`)
+    const response = await global.axios.get(`_design/viewIdentify/_view/viewQR`);
+
+    console.log(response.data);
 
     if(response.status !== 200){
       return Promise.reject(response.statusText);
     }
 
-    docs = response.data.rows
+    const docs = response.data.rows
       .map((row:any) => {
         if(row['key'] === Code){
           return row['id'];
@@ -107,6 +108,107 @@ export async function getDataForType(type: string): Promise<any[]> {
     }
 
     return Promise.resolve(response.data.rows);
+  }
+  catch (err) {
+    return Promise.reject(err);
+  }
+}
+
+//-------------------------------------------------------------------------------------------------
+// Edit documents
+//-------------------------------------------------------------------------------------------------
+/**
+ * Adds a Qr Code to a document in the database
+ * if no qrCodes array exists, it will be created
+ * @param id - id of the document
+ * @param qrCode - string value of the Qr Code
+ * @returns a promise that resolves to the documents new rev string when the Qr Code is added
+ */
+export async function addQrCodeToDocument(id: string, qrCode: string): Promise<string> {
+  try {
+    if(!global.axios){
+      return Promise.reject('no server connection');
+    }
+
+    if(await hasQrCode(qrCode)){
+      const doc = await getDocumentFromQRCode(qrCode);
+      return Promise.reject(`QR Code already exists for ${doc}`);
+    }
+
+    const response = await global.axios.get(id);
+
+    if(response.status !== 200){
+      return Promise.reject(response.statusText);
+    }
+
+    const doc = response.data;
+
+    if(!doc.qrCode)
+      doc.qrCode = [];
+
+    doc.qrCode.push(qrCode);
+
+    const response2 = await global.axios.put(id, doc);
+
+    if(response2.status !== 201){
+      return Promise.reject(response2.statusText);
+    }
+
+    return Promise.resolve(response2.data.rev);
+  }
+  catch (err) {
+    return Promise.reject(err);
+  }
+}
+export async function hasQrCode(code: string) {
+  try {
+    if(!global.axios){
+      return Promise.reject('no server connection');
+    }
+
+    const response = await global.axios.get(`_design/viewIdentify/_view/viewQR`)
+
+    if(response.status !== 200)
+      return Promise.reject(response.statusText);
+
+    const docs = response.data.rows
+      .map((row:any) => {
+        if(row['key'] === code){
+          return row['id'];
+        }
+        return null;
+      })
+      .filter((id:any) => id !== null);
+
+    return Promise.resolve(docs.length > 0);
+  }
+  catch (err) {
+    return Promise.reject(err);
+  }
+}
+export async function removeQrCodeFromDocument(id: string, qrCode: string): Promise<string> {
+  try {
+    if(!global.axios)
+      return Promise.reject('no server connection');
+
+    const response = await global.axios.get(id);
+
+    if(response.status !== 200)
+      return Promise.reject(response.statusText);
+
+    const doc = response.data;
+
+    if(!doc.qrCode)
+      return Promise.reject('document has no qrCodes');
+
+    doc.qrCode = doc.qrCode.filter((code: string) => code !== qrCode);
+
+    const response2 = await global.axios.put(id, doc);
+
+    if(response2.status !== 201)
+      return Promise.reject(response2.statusText);
+
+    return Promise.resolve(response2.data.rev);
   }
   catch (err) {
     return Promise.reject(err);

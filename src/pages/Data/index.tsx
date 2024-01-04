@@ -1,14 +1,17 @@
 import React from 'react'
-import { ScrollView, TouchableOpacity, Text, View } from 'react-native'
+import { ScrollView, TouchableOpacity, Text, View, Alert } from 'react-native'
 import { useLocation, useNavigate, useParams } from 'react-router-native'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
-import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
+import { Menu, MenuOptions, MenuOption, MenuTrigger, renderers } from 'react-native-popup-menu';
 
 import ImageComponent from 'components/ImageComponent';
 import { useDataHierarchy } from 'hooks/localstorage';
-import { getDocumentFromId } from 'utils/DBInteractions';
+import { addQrCodeToDocument, getDocumentFromId } from 'utils/DBInteractions';
 import Markdown from 'components/markdown';
-import Edit from 'components/UI/Edit';
+import EditComment from './EditComment';
+import EditQRCodes from './EditQRCodes';
+import CameraComponent from 'components/CameraComponent';
+import { BarCodeScannerResult } from 'expo-barcode-scanner';
 
 //
 // Component
@@ -18,7 +21,10 @@ export default function() {
   // State
   //
   const [data, setData] = React.useState<Record<string,any>>({});
-  const [showEdit, setShowEdit] = React.useState(false);
+  const [showEditComment, setShowEditComment] = React.useState(false);
+  const [showEditQR, setShowEditQR] = React.useState(false);
+  const [showAddQR, setShowAddQR] = React.useState(false);
+  const [showMenu, setShowMenu] = React.useState(false);
 
   //
   // Hook calls
@@ -37,6 +43,46 @@ export default function() {
     return React.useMemo(() => {
       return new URLSearchParams(location.search);
     }, [location]);
+  }
+  function handleBarcodeScanned(data: BarCodeScannerResult, retry: () => void){
+    const qrCode = data.data;
+    if(!qrCode)
+      return retry();
+    
+    Alert.alert(
+      'Add QR Code?',
+      `Do you want to add the QR Code ${qrCode} to this document?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => retry(),
+          style: 'cancel'
+        },
+        {
+          text: 'OK',
+          onPress: () => addQRCode(qrCode)
+        }
+      ]
+    )
+  }
+  async function addQRCode(qrCode: string){
+    setShowAddQR(false);
+
+    addQrCodeToDocument(id!, qrCode)
+      .then(newRev => {
+        setData({
+          ...data,
+          _rev: newRev,
+          qrCode: [
+            ...(data.qrCode || []),
+            qrCode
+          ]
+        })
+      })
+      .catch(err => {
+        Alert.alert('Error', err);
+        return;
+      });
   }
 
   //
@@ -59,6 +105,7 @@ export default function() {
     .filter(([key]) => !key.startsWith('_'))
   const dataType = query.get('type');
   const fileType = data ? data['-name']? data['-name'].split('.').at(-1): '': '';
+  const menuName = `${id}-menu`;
   const items = entries
     //
     // Move Image and content to top and Comment to bottom
@@ -95,7 +142,7 @@ export default function() {
             <View className='w-full h-fit flex flex-row items-center justify-between px-4 pb-2'>
               <View className='w-6'/>
               <Text className='text-xl text-zinc-300 underline'> Comment </Text>
-              <TouchableOpacity onPress={() => setShowEdit(true)}>
+              <TouchableOpacity onPress={() => setShowEditComment(true)}>
                 <FontAwesome name='edit' size={24} color='white'/>
               </TouchableOpacity>
             </View>
@@ -158,20 +205,45 @@ export default function() {
   //
   // Render invalid data type
   //
-  if(!dataHierarchy || !dataHierarchy[dataType!]){
+  if(!id || !dataHierarchy || !dataHierarchy[dataType!]){
     return <View></View>
   }
 
   //
   // Render edit
   //
-  if(showEdit){
+  if(showEditComment){
     return (
-      <Edit 
+      <EditComment 
         title='Edit comment' 
         value={data['comment']} 
         onSubmit={() => {}} 
-        onclose={() => { setShowEdit(false) }}  
+        onclose={() => { setShowEditComment(false) }}  
+      />
+    )
+  }
+
+  //
+  // Render add QR
+  //
+  if(showAddQR){
+    return (
+      <CameraComponent 
+        handleBarcodeScanned={handleBarcodeScanned}
+        exit={() => setShowAddQR(false)}
+      />
+    )
+  }
+
+  //
+  // Render edit QR
+  //
+  if(showEditQR){
+    return (
+      <EditQRCodes 
+        codes={data['qrCode']}
+        onSubmit={() => {}}
+        onClose={() => { setShowEditQR(false) }}
       />
     )
   }
@@ -190,26 +262,71 @@ export default function() {
             </Text>
           </View>
         </TouchableOpacity>
-        <Menu>
-          {/** TODO: move Icon to the right  */}
-          <MenuTrigger >
+        <Menu 
+          renderer={renderers.NotAnimatedContextMenu} 
+          name={menuName}
+          opened={showMenu}
+          onBackdropPress={() => setShowMenu(false)}
+        >
+          <MenuTrigger onPress={() => setShowMenu(true)}>
             <Ionicons name='menu-sharp' size={30} color='rgb(59 130 246)'/>
           </MenuTrigger>
-          <MenuOptions>
-            <MenuOption onSelect={() => {}}>
+          <MenuOptions
+            customStyles={{
+              optionsContainer: {
+                backgroundColor: 'rgba(0,0,0,0)',
+                paddingRight: 50,
+                paddingLeft: 50,
+                width: '100%'
+              },
+              optionsWrapper: {
+                borderRadius: 10,
+                backgroundColor: 'rgb(31,41,55)',
+              },
+              optionWrapper: {
+                padding: 10,
+              }
+            }}
+          >
+            <MenuOption onSelect={() => {
+                setShowAddQR(true)
+                setShowMenu(false)
+              }}
+            >
               <Text className='text-blue-500 text-2xl'>
-                Edit
+                Add QR-Code
               </Text>
             </MenuOption>
-            <MenuOption onSelect={() => {}}>
+            <View className='border-b border-gray-700'/>
+            <MenuOption onSelect={() => {
+                setShowEditQR(true)
+                setShowMenu(false)
+              }}
+            >
               <Text className='text-blue-500 text-2xl'>
-                Delete
+                Edit QR Codes
+              </Text>
+            </MenuOption>
+            <View className='border-b border-gray-700'/>
+            <MenuOption onSelect={() => Alert.alert('not implemented')}>
+              <Text className='text-blue-500 text-2xl'>
+                Add Issue
+              </Text>
+            </MenuOption>
+            <View className='border-b border-gray-700'/>
+            <MenuOption onSelect={() => Alert.alert('not implemented')}>
+              <Text className='text-blue-500 text-2xl'>
+                Edit Attachment
+              </Text>
+            </MenuOption>
+            <View className='border-b border-gray-700'/>
+            <MenuOption onSelect={() => setShowMenu(false)}>
+              <Text className='text-blue-500 text-2xl'>
+                Close
               </Text>
             </MenuOption>
           </MenuOptions>
         </Menu>
-        <TouchableOpacity >
-        </TouchableOpacity>
       </View>
         {
         //TODO disable bouncing

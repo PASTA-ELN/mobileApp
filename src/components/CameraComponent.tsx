@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarCodeScanner, type BarCodeScannerResult } from 'expo-barcode-scanner'
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 //
 // Component Props
@@ -8,6 +9,7 @@ import { Text, View } from 'react-native';
 type IProps = {
   handleBarcodeScanned: (result: BarCodeScannerResult, retry: () => void) => void;
   bordered?: boolean;
+  exit?: () => void;
 }
 //
 // Component
@@ -82,6 +84,13 @@ export default function(props: IProps) {
     <BarCodeScanner
       onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
       className='w-full h-full'
-    />
+    >
+      {props.exit && <TouchableOpacity onPress={props.exit} className='w-full h-fit p-4 flex flex-row items-center justify-end'>
+        <View className='bg-gray-700 p-2 flex flex-row items-center justify-center rounded-xl'>
+          <Text className='text-blue-500'>Exit  </Text>
+          <Ionicons name="exit-sharp" size={30} color="rgb(59,130,246)"/>
+        </View>
+      </TouchableOpacity>}
+    </BarCodeScanner>
   )
 }
