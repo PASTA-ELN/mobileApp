@@ -1,14 +1,19 @@
 import React from 'react'
-import { ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Switch, Text, View } from 'react-native'
+import { useNavigate } from 'react-router-native'
 import MUIIcon from '@expo/vector-icons/MaterialCommunityIcons'
 import IOIcon from '@expo/vector-icons/Ionicons'
 
-import { useAutologinState, useLocalCredentials } from 'hooks/credentials'
-import UserComponent from 'components/UserComponent'
-import Section from 'components/UI/Section'
+import CameraComponent from 'components/CameraComponent'
+import DataHierarchyView from 'components/DataHierarchyView'
 import Item from 'components/UI/Item'
-import { useDataHierarchy } from 'hooks/localstorage'
-import { useNavigate } from 'react-router-native'
+import Menu from 'components/UI/Menu'
+import Section from 'components/UI/Section'
+import UserComponent from 'components/UserComponent'
+import { useAutologinState, useCredentials, useLocalCredentials } from 'hooks/credentials'
+import { CredentialsConfig } from 'types/Credentials'
+import { checkCredentials } from 'utils/DBInteractions'
+import { getAutologinConfigName, loadCredentials, saveCredentials } from 'utils/localInteractions'
 
 //
 // Component
@@ -20,51 +25,33 @@ export default function() {
   const [autologinState, setAutologinState] = useAutologinState();
   const [showDataHierarchy, setShowDataHierarchy] = React.useState(false);
   const [showAddConfig, setShowAddConfig] = React.useState(false);
+  const [showEditDefaultConfig, setShowEditDefaultConfig] = React.useState(false);
+
   //
   // Hook calls
   //
   const localCredentials = useLocalCredentials();
   const credentialsKeys = Object.keys(localCredentials);
-  const dataHierarchy = useDataHierarchy();
+  const usedCredentials = useCredentials();
   const navigate = useNavigate();
+
 
   //
   // Vars
   //
-  if (credentialsKeys.length === 0) {
+  if (credentialsKeys.length === 0)
     return <View></View>
-  }
-  const usedCredentials = {
-    configName: 'default',
-    credentials: localCredentials['default']
-  };
+  
+  if(usedCredentials === null)
+    return <View></View>
 
   //
   // Show Data Hierarchy
   //
   if(showDataHierarchy){
-    const items = Object.entries(dataHierarchy).map(([key, value], index) => {
-      return (
-        //TODO replace with collapsible component
-        <View key={index} className='w-full h-fit flex flex-row items-center justify-start'>
-          <Text className='text-zinc-300'>{key}</Text>
-        </View>
-      )
-    });
 
     return (
-      <View className='p-4'>
-        <View className='w-full h-fit flex flex-row items-center'>
-          <View className='w-[30]'/>
-          <Text className='text-zinc-300 text-2xl mx-auto'>Data Hierarchy</Text>
-          <TouchableOpacity onPress={() => setShowDataHierarchy(false)}>
-            <IOIcon name='close-sharp' size={26} color='rgb(212,212,216)'/>
-          </TouchableOpacity>
-        </View>
-        <ScrollView>
-          {items}
-        </ScrollView>
-      </View>
+      <DataHierarchyView onClose={() => setShowDataHierarchy(false)} />
     )
   }
 
@@ -73,7 +60,52 @@ export default function() {
   //
   if(showAddConfig){
     return (
-      <View></View>
+      <CameraComponent
+        exit={() => setShowAddConfig(false)}
+        handleBarcodeScanned={(result) => {
+
+          const data = JSON.parse(result.data) as CredentialsConfig;
+          
+          if(
+            data.configName && 
+            data.credentials && 
+            data.credentials.username && 
+            data.credentials.password &&
+            data.credentials.server &&
+            data.credentials.database
+          ){
+            Alert.alert(
+              'Found Valid Credentials',
+              `${data.credentials.username} on\n${data.credentials.database} @ ${data.credentials.server}`,
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => setShowAddConfig(false),
+                  style: 'cancel'
+                },
+                {
+                  text: 'Add',
+                  onPress: () => {
+                    checkCredentials(data.credentials)
+                    .then(() => {
+                      saveCredentials(data);
+                    })
+                    .catch(() => {
+                      Alert.alert('Invalid Credentials');
+                    })
+                    .finally(() => {
+                      setShowAddConfig(false);
+                    })
+                  }
+                }
+              ]  
+            );
+          }
+          else {
+            Alert.alert('Invalid QR Code');
+          }
+        }}
+      />
     )
   }
   
@@ -101,7 +133,7 @@ export default function() {
           </View>
           <Text className='text-zinc-400 text-[16px] ml-5'>auto login</Text>
         </Item>
-        <Item variant='button' onPress={() => {}}>
+        <Item variant='button' onPress={() => setShowAddConfig(true)}>
           <View className='bg-green-500 rounded-lg p-[1]'>
             <IOIcon name="add-sharp" size={26} color='white'/>
           </View>
@@ -122,6 +154,12 @@ export default function() {
           <Text className='text-zinc-400 text-[16px] ml-5'>info</Text>
         </Item>
       </Section>
+      <Menu 
+        onClose={() => setShowEditDefaultConfig(false)}
+        open={showEditDefaultConfig}
+      >
+
+      </Menu>
     </View>
   )
 }

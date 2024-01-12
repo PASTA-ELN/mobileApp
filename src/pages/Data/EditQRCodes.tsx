@@ -10,7 +10,7 @@ import Section from 'components/UI/Section'
 type IProps = {
   codes: string[];
   onClose: () => void;
-  onSubmit: () => void;
+  onSubmit: (codes: string[]) => void;
 }
 
 //
@@ -28,8 +28,8 @@ export default function(props: IProps) {
   //
   const items = codes.map((code, index) => {
     return (
-      <Section>
-        <View key={index} className='w-full h-fit flex flex-row items-center justify-between p-4'>
+      <Section key={`EDIT_QR_${index}`}>
+        <View className='w-full h-fit flex flex-row items-center justify-between p-4'>
           <Text className='text-zinc-300 text-xl'>{code}</Text>
           <TouchableOpacity onPress={() => removeCode(code)}>
             <Ionicons style={{ color: 'rgb(59,130,246)' }} name='trash-bin' size={30}/>
@@ -46,6 +46,12 @@ export default function(props: IProps) {
     const newCodes = codes.filter(c => c !== code);
     setCodes(newCodes);
   }
+  function close(){
+    if(codes.length !== props.codes.length){
+      props.onSubmit(codes);
+    }
+    props.onClose();
+  }
 
   //
   // Render
@@ -55,7 +61,7 @@ export default function(props: IProps) {
       <View className='w-full h-fit pb-4 flex flex-row items-center justify-between'>
         <View className='w-10' />
         <Text className='text-zinc-300 text-2xl underline'>Edit QR Codes</Text>
-        <TouchableOpacity onPress={props.onClose}>
+        <TouchableOpacity onPress={close}>
           <Ionicons style={{ color: 'rgb(59,130,246)' }} name='close-sharp' size={40}/>
         </TouchableOpacity>
       </View>

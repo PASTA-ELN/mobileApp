@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { Credentials, type CredentialsConfig } from 'types/Credentials'
 import { checkCredentials, initDB } from 'utils/DBInteractions'
-import { saveCredentials } from 'utils/localInteractions'
+import { saveCredentials, setAutologinConfigName } from 'utils/localInteractions'
 import { Toast } from 'utils/toast'
 
 type LoginState = {
@@ -27,7 +27,8 @@ export const login = createAsyncThunk<void, CredentialsConfig>(
         });
         
       await initDB(arg.credentials);
-      saveCredentials(arg);
+      await saveCredentials(arg);
+      await setAutologinConfigName(arg.configName);
       return Promise.resolve();
     }
     catch (err: any) {

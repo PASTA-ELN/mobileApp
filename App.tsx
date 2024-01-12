@@ -7,7 +7,6 @@ import Constants from 'expo-constants';
 import { Provider as ReduxProvider } from 'react-redux';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { encode, decode } from 'base-64';
-import { MenuProvider } from 'react-native-popup-menu';
 
 import { store } from 'store';
 import Main from 'src/main';
@@ -40,12 +39,10 @@ export default function App() {
   return (
     <ReduxProvider store={store}>
       <RootSiblingParent>
-        <MenuProvider>
-          <SafeAreaView className='w-screen h-screen dark bg-gray-900'>
-            <Main />
-            <StatusBar style="light" />
-          </SafeAreaView>
-        </MenuProvider>
+        <SafeAreaView className='w-screen h-screen dark bg-gray-900'>
+          <Main />
+          <StatusBar style="light" />
+        </SafeAreaView>
       </RootSiblingParent>
     </ReduxProvider>
   );

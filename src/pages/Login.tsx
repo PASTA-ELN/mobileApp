@@ -1,7 +1,7 @@
 import React from 'react'
 import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native'
 
-import { getCredentials, loadAutologin } from 'utils/localInteractions';
+import { getAutologinConfigName, getCredentials, loadAutologin } from 'utils/localInteractions';
 import { useAppDispatch } from 'store';
 import { login, relogin } from 'store/reducer/Login';
 import LoginForm from 'components/LoginForm';
@@ -37,22 +37,33 @@ export default function() {
 */
   React.useEffect(() => {
     loadAutologin()
-      .then((autologin) => {
-        if(!autologin){
-          setIsLoading(false);
-          return;
-        }
-        getCredentials('default')
-        .then((config) => {
-          if(config){
-            dispatch(relogin(config))
-            .then(() => setIsLoading(false));
-          }
-          else {
-            setIsLoading(false);
-          }
-        });
-      });
+    .then((autologin) => {
+      if(!autologin){
+        setIsLoading(false);
+        return;
+      }
+      return getAutologinConfigName()
+    })
+    .then((configName) => {
+      if(!configName){
+        setIsLoading(false);
+        return;
+      }
+      return getCredentials(configName)
+    })
+    .then((config) => {
+      if(config){
+        return dispatch(relogin(config))
+      }
+      else {
+        setIsLoading(false);
+      }
+    })
+    .then(() => setIsLoading(false))
+    .catch((error) => {
+      console.log(error);
+      setIsLoading(false);
+    });
   }, []);
 
   //

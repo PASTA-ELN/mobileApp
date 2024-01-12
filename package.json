@@ -25,7 +25,6 @@
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-check-box": "^2.1.7",
-    "react-native-popup-menu": "^0.16.1",
     "react-native-root-toast": "^3.5.1",
     "react-native-svg": "13.9.0",
     "react-redux": "^9.0.3",

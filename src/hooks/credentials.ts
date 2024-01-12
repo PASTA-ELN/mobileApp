@@ -1,10 +1,10 @@
 import React from 'react'
 
-import { type Credentials } from 'types/Credentials'
+import { CredentialsConfig, type Credentials } from 'types/Credentials'
 import { loadAutologin, loadCredentials, saveAutologin } from 'utils/localInteractions';
 
 /**
- * Uses the local storage to save the credentials
+ * Uses the local storage to get the credentials
  *  - relies on React.useState
  *  - uses and Effect to load the credentials on mount
  * @returns a reference to all saved local credentials
@@ -27,8 +27,8 @@ export function useLocalCredentials() {
 }
 
 /**
- * Uses the local storage to save the autologin state
- * - relies on 
+ * Uses the local storage to get the autologin state
+ * - relies on React.useState
  * - uses and Effect to load the autologin state on mount
  * @returns a tuple with the autologin state and the function to set it
  */
@@ -61,4 +61,22 @@ export function useAutologinState() {
   
 
   return [autologin, setAutoLogin] as const;
+}
+
+/**
+ * Uses the local storage to get the used credentials
+ * - relies on React.useState
+ * - uses and Effect to load the credentials on mount
+ * @returns a reference to the used credentials
+ */
+export function useCredentials() {
+  //TODO
+
+  const [credentials, setCredentials] = React.useState<CredentialsConfig | null>(null);
+
+  React.useEffect(() => {
+    //TODO
+  }, [/*TODO*/]);
+
+  return credentials;
 }

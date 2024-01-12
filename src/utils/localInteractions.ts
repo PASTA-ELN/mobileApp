@@ -39,10 +39,10 @@ async function initialize(){
 }
 
 //-------------------------------------------------------------------------------------------------
-// Ontology
+// Data Hierarchy
 //-------------------------------------------------------------------------------------------------
-export function checkDataHierarchy(ontology: any) {
-  const dataTypes = Object.keys(ontology)
+export function checkDataHierarchy(dataHierarchy: any) {
+  const dataTypes = Object.keys(dataHierarchy)
     .filter(key => !key.startsWith('_') && !key.startsWith('x'));
 
   if(dataTypes.length === 0) {
@@ -81,6 +81,10 @@ export async function getDataTypes(): Promise<string[]|null> {
 //-------------------------------------------------------------------------------------------------
 // Saved Credentials
 //-------------------------------------------------------------------------------------------------
+/**
+ * Add new Credential config to the saved credentials
+ * @param config
+ */
 export async function saveCredentials(config: CredentialsConfig) {
   const data = await loadCredentials();
 
@@ -92,6 +96,13 @@ export async function saveCredentials(config: CredentialsConfig) {
     AsyncStorage.setItem(credentialsKey, JSON.stringify(data));
   }
 }
+/**
+ * Get the credentials for a given config name
+ * @param configName
+ * @returns
+ * - Credentials if found
+ * - null if not found
+ */
 export async function getCredentials(configName: string): Promise<Credentials|null> {
   const data = await loadCredentials();
 
@@ -105,6 +116,12 @@ export async function getCredentials(configName: string): Promise<Credentials|nu
 
   return null;
 }
+/**
+ * Get all saved credentials
+ * @returns
+ * - Record<string, Credentials> if found
+ * - null if not found
+ */
 export async function loadCredentials(): Promise<Record<string, Credentials>|null> {
   const data = await AsyncStorage.getItem(credentialsKey);
 
@@ -115,11 +132,21 @@ export async function loadCredentials(): Promise<Record<string, Credentials>|nul
 }
 
 //-------------------------------------------------------------------------------------------------
-// Autlogin
+// Autologin
 //-------------------------------------------------------------------------------------------------
+/**
+ * sets the autologin value
+ * @param autologin
+ */
 export async function saveAutologin(autologin: boolean) {
   return AsyncStorage.setItem('autologin', JSON.stringify(autologin));
 }
+/**
+ * Get the autologin value
+ * @returns
+ * - true if autologin is enabled
+ * - false if autologin is disabled
+ */
 export async function loadAutologin(): Promise<boolean> {
   const data = await AsyncStorage.getItem('autologin');
 
@@ -127,4 +154,25 @@ export async function loadAutologin(): Promise<boolean> {
     return JSON.parse(data);
   }
   return false;
+}
+/**
+ * sets a config name for autologin
+ * @param configName
+ */
+export async function setAutologinConfigName(configName: string) {
+  return AsyncStorage.setItem('autologinConfigName', JSON.stringify(configName));
+}
+/**
+ * Get the config name for autologin
+ * @returns
+ * - string if config name is set
+ * - null if config name is not set or autologin is disabled
+ */
+export async function getAutologinConfigName(): Promise<string|null> {
+  const data = await AsyncStorage.getItem('autologinConfigName');
+
+  if(data) {
+    return JSON.parse(data);
+  }
+  return null;
 }

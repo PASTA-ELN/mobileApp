@@ -5,7 +5,8 @@ import { Image, Text, View } from 'react-native'
 // Component Props
 //
 type IProps = {
-  children: string
+  children: string;
+  variables?: Record<string, string|number>;
 }
 //
 // Component
@@ -20,7 +21,7 @@ export default function(props: IProps) {
   // Makeshift Markdown Parser
   //
   const items = props.children.split('\n').map((item, index) => {
-    item.trim();
+    item = item.trim();
 
     //
     // HTML Images
@@ -86,6 +87,31 @@ export default function(props: IProps) {
     // Remove markdown symbols
     //
     item = item.replace('#', '').replace('-', '').trim();
+
+    //
+    // find and replace variables
+    //
+    const parts = item.split('|');
+    if(parts.length > 1){
+      if(parts.length % 3 !== 1){
+        console.error('Markdown Variable Error: Invalid number of parts');
+      }
+      else {
+        for(let i = 0; i < parts.length; i += 3){
+          const variable = parts[i + 1];
+          const defaultValue = parts[i + 2];
+  
+          if(!props.variables || !props.variables[variable]){
+            item = item.replace(`|${variable}|`, defaultValue);
+          }
+          else {
+            item = item.replace(`|${variable}|`, props.variables[variable].toString());
+          }
+
+          item = item.replace(`${defaultValue}|`, '');
+        }
+      }
+    }
 
     //
     // Split Text into bold and normal text

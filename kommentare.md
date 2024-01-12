@@ -3,7 +3,7 @@
 md:
  - basic md
  - html img
- - substitution ( variable template)
+ - substitution (variable template)
 
 Attachments
 

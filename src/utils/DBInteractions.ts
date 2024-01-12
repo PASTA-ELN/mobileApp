@@ -214,10 +214,41 @@ export async function removeQrCodeFromDocument(id: string, qrCode: string): Prom
     return Promise.reject(err);
   }
 }
+export async function updateQRCodes(id: string, qrCodes: string[]): Promise<string> {
+  try {
+    if(!global.axios)
+      return Promise.reject('no server connection');
+
+    const response = await global.axios.get(id);
+
+    if(response.status !== 200)
+      return Promise.reject(response.statusText);
+
+    const doc = response.data;
+    doc.qrCode = qrCodes;
+
+    const response2 = await global.axios.put(id, doc);
+
+    if(response2.status !== 201)
+      return Promise.reject(response2.statusText);
+
+    return Promise.resolve(response2.data.rev);
+  }
+  catch (err) {
+    return Promise.reject(err);
+  }
+}
 
 //-------------------------------------------------------------------------------------------------
 // Credentials
 //-------------------------------------------------------------------------------------------------
+/**
+ * tries to connect to the database with the given credentials
+ * @param credentials 
+ * @returns 
+ * - resolves to void if the credentials are valid
+ * - rejects with a string if the credentials are invalid
+ */
 export async function checkCredentials(credentials: Credentials) {
   try {
     const response = await Axios.get(

@@ -33,7 +33,7 @@ export default function(props: IProps){
   // Render
   //
   return (
-    <View className='w-full h-fit rounded-2xl mt-4 bg-gray-800'>
+    <View className='w-full h-fit rounded-xl mt-4 bg-gray-800'>
       {items}
     </View>
   )
