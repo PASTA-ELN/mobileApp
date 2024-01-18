@@ -1,24 +1,30 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import type { LogState, Log } from "../../types/store"
+type Log = {
+  type: 'error'|'info'|'warn'|'log',
+  message: string,
+  timestamp: number,
+}
+type LogState = {
+  logs: Log[],
+  count: number,
+};
 
 const initialState: LogState = {
   logs: [],
-  count: 0
-}
+  count: 0,
+};
 
 const logSlice = createSlice({
   name: 'log',
   initialState,
   reducers: {
     log: (state, action: PayloadAction<Log>) => {
-      state.count ++;
       state.logs.push(action.payload);
-
-      return state;
+      state.count++;
     }
-  }
-})
+  },
+});
 
 export const { log } = logSlice.actions;
 export default logSlice.reducer;

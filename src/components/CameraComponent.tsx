@@ -1,94 +1,96 @@
-import React, { Component, useState } from 'react'
-import { Alert, Image, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { runOnJS } from 'react-native-reanimated';
-import { Text } from 'react-native-svg';
-import { Camera, CameraDevice, useCameraDevices, useFrameProcessor } from 'react-native-vision-camera';
-import { Barcode, BarcodeFormat, scanBarcodes, useScanBarcodes, } from 'vision-camera-code-scanner';
+import React from 'react';
+import { BarCodeScanner, type BarCodeScannerResult } from 'expo-barcode-scanner'
+import { Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-import { cameraStyle, SCREEN_HEIGHT, SCREEN_WIDTH } from '../style';
-
-type Props = {
-  onSucessCallback: (data: Barcode) => Promise<void>;
-  size: 'full' | 'small';
-  successMessage: string;
+//
+// Component Props
+//
+type IProps = {
+  handleBarcodeScanned: (result: BarCodeScannerResult, retry: () => void) => void;
+  bordered?: boolean;
+  exit?: () => void;
 }
+//
+// Component
+//
+export default function(props: IProps) {
+  //
+  // State
+  //
+  const [hasPermission, setHasPermission] = React.useState<boolean>(false);
+  const [scanned, setScanned] = React.useState<boolean>(false);
 
-export default function CameraComponent({
-  onSucessCallback,
-  size,
-  successMessage
-}: Props) {
-  const [hasPermission, setHasPermission] = React.useState(false);
-  const [torch, setTorch] = useState<'off'|'on'>();
-  const [lock, setLock] = useState(false);
-  const [barcode, setBarcode] = useState<Barcode>();
-  const devices = useCameraDevices();
-  const device = devices.back;
-
-
-  const frameProcessor = useFrameProcessor((frame) => {
-      'worklet';
-      const detectedBarcodes = scanBarcodes(frame, [BarcodeFormat.QR_CODE], { checkInverted: true });
-      runOnJS(setBarcode)(detectedBarcodes[0]);
-    }, []);
-
+  //
+  // Functions
+  //
+  async function getBarCodeScannerPermissions() {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    setHasPermission(status === 'granted');
+  }
+  function handleBarCodeScanned(result: BarCodeScannerResult) {
+    setScanned(true);
+    props.handleBarcodeScanned(result, () => setScanned(false));
+  }
+  //
+  // Effects
+  //
   React.useEffect(() => {
-    (async () => {
-      const status = await Camera.requestCameraPermission();
-      setHasPermission(status === 'authorized');
-    })();
+    getBarCodeScannerPermissions()
   }, []);
-  
-  const toggleTorch = () => {
-    if(torch === 'on'){
-      setTorch('off');
-    } else {
-      setTorch('on');
-    }
+  //
+  // Render loading
+  //
+  if (hasPermission === null) {
+    return (
+      <View className='w-full h-full flex items-center justify-center'>
+        <Text className='text-zinc-300 text-2xl'>
+          Loading...
+        </Text>
+      </View>
+    );
   }
-
-  if(barcode && !lock){
-    setLock(true);
-    Alert.alert(
-      successMessage,
-      `Read: ${barcode.displayValue}`,
-      [
-        {
-          text: 'OK',
-          onPress:() => {
-            setLock(false);
-            onSucessCallback(barcode);
-          }
-        }
-      ]);
+  //
+  // Render invalid permissions
+  //
+  if (hasPermission === false) {
+    return (
+      <View className='w-full h-full flex items-center justify-center'>
+        <Text className='text-zinc-300 text-2xl'>
+          no access to camera
+        </Text>
+      </View>
+    )
   }
-  
-  const camera = size === 'full'? {
-    height: SCREEN_HEIGHT
-  }:{
-    height: SCREEN_WIDTH,
-  };
-    
-  return device != null && hasPermission ?
-  (
-    <View>
-      <Camera 
-        device={device}
-        isActive={true}
-        style={camera}
-        torch={torch}
-        frameProcessor={frameProcessor}
-        frameProcessorFps={5}
-      />
-      <TouchableOpacity
-          style={cameraStyle.torch}
-          onPress={() => toggleTorch()}>
-          <Image
-            style={cameraStyle.torchIcon}
-            source={require('../public/torch.png')}
+  //
+  // Render bordered Camera View (small)
+  //
+  if(props.bordered)
+    return (
+      <View className='w-full h-full relative'>
+        <View className='w-full h-full border-8 border-gray-900 rounded-3xl absolute top-0 left-0 z-10'/>
+        <View className='w-full h-full p-2'>
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            className='w-full h-full'
           />
-        </TouchableOpacity>
-    </View>
-  ) : 
-  <Text>Error</Text>
+        </View>
+      </View>
+    )
+  //
+  // Render Camera View (full)
+  //
+  return (
+    <BarCodeScanner
+      onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+      className='w-full h-full'
+    >
+      {props.exit && <TouchableOpacity onPress={props.exit} className='w-full h-fit p-4 flex flex-row items-center justify-end'>
+        <View className='bg-gray-700 p-2 flex flex-row items-center justify-center rounded-xl'>
+          <Text className='text-blue-500'>Exit  </Text>
+          <Ionicons name="exit-sharp" size={30} color="rgb(59,130,246)"/>
+        </View>
+      </TouchableOpacity>}
+    </BarCodeScanner>
+  )
 }

@@ -1,52 +1,94 @@
+import React from 'react'
+import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native'
+
+import { getAutologinConfigName, getCredentials, loadAutologin } from 'utils/localInteractions';
+import { useAppDispatch } from 'store';
+import { login, relogin } from 'store/reducer/Login';
+import LoginForm from 'components/LoginForm';
+
+//
+// Component
+//
+export default function() {
+  //
+  // State
+  //
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+
+  //
+  // Hook calls
+  //
+  const dispatch = useAppDispatch();
+
 /**
- * @file Login page
- * props: loggedIn callback function upon success
- */
-import React, { Component } from 'react';
-import { Keyboard, Text, TouchableWithoutFeedback, View } from 'react-native';
-import Toast from 'react-native-toast-message';
+* >>=============================================================================<<
+* ||       __        _______ _     ____ ___  __  __ _____   _____ ___            ||
+* ||       \ \      / / ____| |   / ___/ _ \|  \/  | ____| |_   _/ _ \           ||
+* ||        \ \ /\ / /|  _| | |  | |  | | | | |\/| |  _|     | || | | |          ||
+* ||         \ V  V / | |___| |__| |__| |_| | |  | | |___    | || |_| |          ||
+* ||          \_/\_/  |_____|_____\____\___/|_|  |_|_____|   |_| \___/           ||
+* ||   ____    _    _     _     ____    _    ____ _  __  _   _ _____ _     _     ||
+* ||  / ___|  / \  | |   | |   | __ )  / \  / ___| |/ / | | | | ____| |   | |    ||
+* || | |     / _ \ | |   | |   |  _ \ / _ \| |   | ' /  | |_| |  _| | |   | |    ||
+* || | |___ / ___ \| |___| |___| |_) / ___ \ |___| . \  |  _  | |___| |___| |___ ||
+* ||  \____/_/   \_\_____|_____|____/_/   \_\____|_|\_\ |_| |_|_____|_____|_____|||
+* ||                                                                             ||
+* >>=============================================================================<<
+*/
+  React.useEffect(() => {
+    loadAutologin()
+    .then((autologin) => {
+      if(!autologin){
+        setIsLoading(false);
+        return;
+      }
+      return getAutologinConfigName()
+    })
+    .then((configName) => {
+      if(!configName){
+        setIsLoading(false);
+        return;
+      }
+      return getCredentials(configName)
+    })
+    .then((config) => {
+      if(config){
+        return dispatch(relogin(config))
+      }
+      else {
+        setIsLoading(false);
+      }
+    })
+    .then(() => setIsLoading(false))
+    .catch((error) => {
+      console.log(error);
+      setIsLoading(false);
+    });
+  }, []);
 
-import LoginForm from '../components/LoginForm';
-import { CredentialWithConfigName } from '../types/Interactions';
-import { dispatch } from '../store';
-import { login } from '../store/reducer/Login';
-import { loginStyle } from '../style/pages/login';
-
-type Props = {}
-type State = {}
-
-export default class Login extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {}
-  }
-
-  submit = async (credential: CredentialWithConfigName) => {
-    const res = await dispatch(login(credential)).unwrap();
-
-    if(res !== 'success'){
-      Toast.show({
-        type: 'error',
-        text1: 'warning',
-        text2: res
-      })
-    }
-  }
-
-  /*********************
-   * The Render Method *
-   *********************/
-  render() {
+  //
+  // Render empty view if loading
+  //
+  if(isLoading){
+    //TODO: Add loading screen
     return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={{ backgroundColor: 'white', height: '100%' }} >
-          <View style={{height: '95%'}}>
-            <LoginForm submit={this.submit} />
-          </View>
-          <Text style={loginStyle.versionText}>Version {global.version}</Text>
-          <Toast/>
-        </View>
-      </TouchableWithoutFeedback>
-    );
+      <View />
+    )
   }
+
+  //
+  // Render login form
+  //
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View className='w-full h-full'>
+        <View className='w-full h-full flex items-center justify-center'>
+          <LoginForm submit={(credentials) => dispatch(login(credentials))} />
+        </View>
+        <Text className='text-zinc-600 ml-4'>
+          Version {global.version}
+        </Text>
+      </View>
+    </TouchableWithoutFeedback>
+  )
 }

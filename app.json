@@ -4,7 +4,7 @@
   "expo": {
     "name": "Pasta",
     "slug": "Pasta",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -13,9 +13,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "experiments": {
+      "tsconfigPaths": true
+    },
     "plugins": [
       [
-        "react-native-vision-camera",
+        "expo-barcode-scanner",
         {
           "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera."
         }
@@ -31,7 +34,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "de.micromechanics.pasta",
       "infoPlist": {
-        "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera."
+        "NSCameraUsageDescription": "$(PRODUCT_NAME) needs access to your Camera.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
       }
     },
     "android": {
@@ -48,8 +52,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "52325add-30e1-4acf-83d5-a2a3161f704e"
+        "projectId": "e3308561-d76d-4929-b8ad-f03f39ad1651"
       }
-    }
+    },
+    "owner": "steffenbri"
   }
 }

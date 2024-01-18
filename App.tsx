@@ -1,49 +1,49 @@
-/**
- * @file used by expo run:[ios/android]
- */
-import 'react-native-reanimated'
+import 'expo-dev-client'
+import './app'
 
-import React, { Component } from 'react';
+import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'expo-status-bar'
+import Constants from 'expo-constants';
 import { Provider as ReduxProvider } from 'react-redux';
-import { decode, encode } from 'base-64';
-import { expo } from './app.json';
+import { RootSiblingParent } from 'react-native-root-siblings';
+import { encode, decode } from 'base-64';
 
-import App from './src/App';
-import { store } from './src/store';
+import { store } from 'store';
+import Main from 'src/main';
 
-import type { InitialProps } from 'expo/build/launch/withExpoRoot.types';
+//
+// Global variables
+//
+global.version = Constants.expoConfig?.version || '0.0.0';
+global.build = Constants.expoConfig?.extra?.build || '0';
+global.env = Constants.expoConfig?.extra?.env || 'development';
 
-/**
- * btoa and atob polyfills are broken in RN so we manually provide base64 encoding
- */
+//
+// BASE64 polyfill for axios
+//
 if (!global.btoa) {
   global.btoa = encode;
-}
+  }
 
-if (!global.atob) {
+  if (!global.atob) {
   global.atob = decode;
-}
-
-global.version = expo.version;
-
-type Props = InitialProps & {};
-type State = {}
-
-/**
-* Component to Wrap Providers around the App
-* @returns App with attached Providers 
-*/
-export default class _App extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {}
   }
 
-  render(): React.ReactNode {
-    return (
-      <ReduxProvider store={store}>
-          <App />
-      </ReduxProvider>
-    )
-  }
+//
+// Component
+//
+export default function App() {
+  //
+  // Render
+  //
+  return (
+    <ReduxProvider store={store}>
+      <RootSiblingParent>
+        <SafeAreaView className='pt-10 dark bg-gray-900'>
+          <Main />
+          <StatusBar style="light" />
+        </SafeAreaView>
+      </RootSiblingParent>
+    </ReduxProvider>
+  );
 }

@@ -1,45 +1,69 @@
-/**
- * @file Camera page that allows scanning of qr-codes
- */
-import React, { Component } from 'react';
-import { Barcode } from 'vision-camera-code-scanner';
-import { Navigate } from 'react-router-native';
+import React from 'react'
+import { Alert, Text, View } from 'react-native'
+import { useNavigate } from 'react-router-native'
 
-import CameraComponent from '../components/CameraComponent';
-import { getDocs } from '../DBInteractions';
+import CameraComponent from 'components/CameraComponent'
+import { getDocumentFromId, getDocumentFromQRCode } from 'utils/DBInteractions'
+import { BarCodeScannerResult } from 'expo-barcode-scanner'
 
+//
+// Component
+//
+export default function() {
+  //
+  // Hook calls
+  //
+  const navigate = useNavigate();
 
+  //
+  // Functions
+  //
+  async function handlebarcodeScanned(data: BarCodeScannerResult, retry: () => void){
+    try {
+      const id = await getDocumentFromQRCode(data.data);
+      const document = await getDocumentFromId(id);
+      const type = document["-type"][0];
 
-type Props = {
+      if (document) {
+        Alert.alert(
+          'Found Document', 
+          `Document: ${id}`,
+          [{ 
+            text: 'Cancel',
+            onPress: () => retry(),
+            style: 'cancel'
+          },{
+            text: 'open',
+            onPress: () => navigate(`/data/${id}?type=${type}`),
+          }]
+        );
+        return;
+      }
 
-}
-type State = {
-  showData?: string
-}
-
-export default class Camera extends Component<Props, State> {
-  constructor(props:Props) {
-    super(props);
-    this.state = {
-      showData: undefined
-    };
-  }
-
-  onSucess = async (barcode:Barcode) => {
-    const ID = await getDocs(barcode.rawValue!);
-    this.setState({showData: ID});
-    return Promise.resolve();
-  }
-
-  /*********************
-   * The Render Method *
-   *********************/  
-  render() {
-    if(this.state.showData){
-      return <Navigate to={`/data/${this.state.showData}`}/>
+      Alert.alert(
+        "Barcode Scanned",
+        `Data: ${data.data}`,
+        [
+          {
+            text: "Cancel",
+            onPress: () => retry(),
+            style: "cancel"
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ]
+      )
     }
-    return(
-      <CameraComponent size='full' onSucessCallback={this.onSucess} successMessage='open Database Entry?'/>
-    )
+    catch(e) { 
+      console.log(e);
+    }
   }
+
+  //
+  // Render
+  //
+  return (
+    <CameraComponent 
+      handleBarcodeScanned={handlebarcodeScanned}
+    />
+  )
 }

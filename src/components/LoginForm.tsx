@@ -1,182 +1,179 @@
-import React, { Component, createRef } from 'react';
-import { Button, Image, Keyboard, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import CheckBox from 'react-native-check-box';
-import Icon from 'react-native-vector-icons/Entypo';
-import Toast from 'react-native-toast-message';
-import { Barcode } from 'vision-camera-code-scanner';
+import React from 'react'
+import { Alert, Button, Image, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Toast } from 'utils/toast'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { type BarCodeScannerResult } from 'expo-barcode-scanner'
 
-import { LoginFormStyle } from '../style';
-import { CredentialWithConfigName } from '../types/Interactions';
-import CameraComponent from './CameraComponent';
+import Input from './UI/Input'
+import CameraComponent from './CameraComponent'
+import { type CredentialsConfig } from 'types/Credentials'
 
-type Props = {
-  submit: (credentials: CredentialWithConfigName) => void;
-  buttonText?: string;
+//
+// Component Props
+//
+type IProps = {
+  submit: (credentials: CredentialsConfig) => void;
 }
-type State = {
-  useNow:       boolean;
-  hidePassword: boolean;
-  scanQR:       boolean;
-  configname:   string;
-  username:     string;
-  password:     string;
-  server:       string;
-  database:     string;
-}
+//
+// Component
+//
+export default function(props: IProps) {
 
-// TODO feedback bei falschem qr Code
+  //
+  // Refs
+  //
+  const usernameInput = React.useRef<TextInput>(null!);
+  const passwordInput = React.useRef<TextInput>(null!);
+  const serverInput   = React.useRef<TextInput>(null!);
+  const databaseInput = React.useRef<TextInput>(null!);
+  const configInput   = React.useRef<TextInput>(null!);
 
-export default class LoginForm extends Component<Props, State> {
-  usernameInput = createRef<TextInput>()
-  passwordInput = createRef<TextInput>()
-  serverInput   = createRef<TextInput>()
-  DatabaseInput = createRef<TextInput>()
-  configInput   = createRef<TextInput>()
-  
-  constructor(props: Props){
-    super(props);
-    this.state={
-      useNow:       true,
-      hidePassword: true,
-      scanQR:       false,
-      configname:   'default',
-      username:     '',
-      password:     '',
-      server  :     '',
-      database:     ''
+  //
+  // State
+  //
+  const [username, setUsername] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
+  const [database, setDatabase] = React.useState<string>('');
+  const [server,   setServer]   = React.useState<string>('');
+  const [config,   setConfig]   = React.useState<string>('default');
+  const [scanQR, setScanQR] = React.useState<boolean>(false);
+
+  //
+  // Functions
+  //
+  function submit() {
+    if(!username || !password || !database || !server || !config){
+      Toast.error('Please fill out all fields');
+      return;
     }
-  }
-
-  changeUsername   = (value: string) => {this.setState({username: value})}
-  changePassword   = (value: string) => {this.setState({password: value})}
-  changeServer     = (value: string) => {this.setState({server: value})}
-  changeDatabase   = (value: string) => {this.setState({database: value})}
-  changeConfigname = (value: string) => {this.setState({configname: value})}
-  check            = ()              => {this.setState({useNow: !this.state.useNow})}
-  submit           = ()              => {
-    const credential: CredentialWithConfigName = {
-      configname: this.state.configname,
+    props.submit({
+      configName: config,
       credentials: {
-        username: this.state.username,
-        password: this.state.password,
-        server  : this.state.server,
-        database: this.state.database
+        username,
+        password,
+        database,
+        server,
       }
-    }
-    this.props.submit(credential);
-  }
-  togglePassword = () => {
-    this.setState({hidePassword: !this.state.hidePassword})
-  }
-  /**callback for scanning QR code */
-  QRcallback = async (data: Barcode) => {
-    var credentials: CredentialWithConfigName = JSON.parse(data.rawValue!);
-    if (credentials.credentials.server.indexOf(':') > -1)
-      credentials.credentials.server = credentials.credentials.server.slice(0, credentials.credentials.server.length - 5)
-    if (credentials.credentials.server.slice(0, 3) == 'htt')
-      credentials.credentials.server = credentials.credentials.server.slice(7);
-    this.setState({
-      configname: credentials.configname,
-      username: credentials.credentials.username,
-      password: credentials.credentials.password,
-      server:   credentials.credentials.server,
-      database: credentials.credentials.database,
-      scanQR: false
     })
-    return Promise.resolve();
+  }
+  function handleBarcodeScanned(result: BarCodeScannerResult, retry: () => void): void {
+    try {
+      const { credentials, configname } = JSON.parse(result.data);
+      Alert.alert(
+        'QR-Code scanned', 
+        `Do you want to use this configuration?\n\n${credentials.database} on ${credentials.server}`, 
+        [
+          {
+            text: 'Cancel',
+            onPress: retry,
+            style: 'cancel'
+          },
+          {
+            text: 'Use',
+            onPress: () => {
+              setUsername(credentials.username);
+              setPassword(credentials.password);
+              setDatabase(credentials.database);
+              setServer(credentials.server);
+              setConfig(configname);
+              setScanQR(false);
+            }
+          }
+        ], 
+        { cancelable: false }
+      );
+    } catch (error) {
+      Toast.error('Invalid QR-Code');
+      retry();
+    }
   }
 
-  render() {
-    if(this.state.scanQR)
-      return (
-        <TouchableOpacity style={LoginFormStyle.cameraWrapper} onPress={() => this.setState({scanQR: false})}>
-          <CameraComponent onSucessCallback={this.QRcallback} successMessage='' size='small'/>
-        </TouchableOpacity>
-      )
+  //
+  // Render Scan QR
+  //
+  if(scanQR){
     return (
-      <View style={LoginFormStyle.outer}>
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={LoginFormStyle.pasta}> PASTA </Text>
-          <TouchableOpacity onPress={() => this.setState({ scanQR: true })}>
-            <Image style={LoginFormStyle.qr} source={require('../public/qr.png')} />
-          </TouchableOpacity>
-        </View>
-        <TextInput 
-          autoCapitalize='none' 
-          autoCorrect={false} 
-          onChangeText={this.changeUsername}
-          onSubmitEditing={this.passwordInput.current?.focus}
-          placeholderTextColor='grey' 
-          placeholder='username' 
-          ref={this.usernameInput}
-          style={LoginFormStyle.input}
-          value={this.state.username}
-        />
-        <View style={{ flexDirection: 'row' }}>
-          <TextInput 
-            style={LoginFormStyle.password}
-            placeholderTextColor='grey' 
-            placeholder='password' 
-            onChangeText={this.changePassword}
-            onSubmitEditing={this.serverInput.current?.focus}
-            autoCapitalize='none' 
-            autoCorrect={false} 
-            ref={this.passwordInput}
-            secureTextEntry={this.state.hidePassword}
-            value={this.state.password}
-          />
-          <TouchableOpacity onPress={this.togglePassword} style={LoginFormStyle.eye}>
-            <Icon name={this.state.hidePassword ? 'eye' : 'eye-with-line'} size={30} color='#000000' />
-          </TouchableOpacity>
-        </View>
-        <TextInput 
-          autoCapitalize='none' 
-          autoCorrect={false} 
-          onChangeText={this.changeServer}
-          onSubmitEditing={this.DatabaseInput.current?.focus}
-          placeholderTextColor='grey' 
-          placeholder='database' 
-          ref={this.serverInput}
-          style={LoginFormStyle.input}
-          value={this.state.server}
-        />
-        <TextInput 
-          autoCapitalize='none' 
-          autoCorrect={false}
-          onChangeText={this.changeDatabase}
-          onSubmitEditing={this.configInput.current?.focus}
-          placeholder='server' 
-          placeholderTextColor='grey' 
-          ref={this.DatabaseInput}
-          style={LoginFormStyle.input}
-          value={this.state.database}
-        />
-        <TextInput 
-          autoCapitalize='none' 
-          autoCorrect={false} 
-          onChangeText={this.changeConfigname}
-          onSubmitEditing={() => {Keyboard.dismiss(); this.submit()}} 
-          placeholderTextColor='grey' 
-          placeholder='configuration name' 
-          ref={this.configInput}
-          style={LoginFormStyle.input}
-          value={this.state.configname}
-        />
-        <View style={{ flexDirection: 'row', flex: 1 }}>
-          <CheckBox
-            isChecked={this.state.useNow}
-            onClick={this.check}
-            style={LoginFormStyle.checkbox}
-          />
-          <Text style={LoginFormStyle.checkboxText}>use now</Text>
-          <View style={LoginFormStyle.button}>
-            <Button 
-              onPress={this.submit}
-              title={this.props.buttonText || 'login'} 
+      <View className='w-full h-full flex flex-col p-2 items-center justify-center'>
+        <View className='w-full h-2/3 flex flex-col bg-gray-900 rounded-3xl p-2'>
+          <View className='w-full h-[90%] bg-gray-800 rounded-3xl'>
+            <CameraComponent 
+              handleBarcodeScanned={handleBarcodeScanned}
+              bordered
             />
           </View>
+          <Button title='Cancel' onPress={() => setScanQR(false)}/>
         </View>
       </View>
     )
   }
+  //
+  // Render
+  //
+  return (
+    <View className='w-3/4 h-fit bg-gray-900 text-zinc-200 rounded-3xl px-2 pt-4 pb-2'>
+      <View className='w-full h-1/8 flex flex-row items-center justify-center'>
+        <Image source={require('assets/adaptive-icon.png')} className='w-20 h-20'/>
+        <Text className='text-zinc-200 text-[50px]'>PASTA</Text>
+      </View>
+      <View className='w-full h-1/8 px-4'>
+        <View className='h-[1px] bg-gray-800 my-4'/>
+        <TouchableOpacity onPress={() => setScanQR(true)}>
+          <View className='w-full flex flex-row items-center justify-evenly'>
+            <Text className=' text-zinc-400'>
+              scan QR-Code to log in
+            </Text>
+            <MaterialCommunityIcons name='qrcode-scan' size={30} color='rgb(59,130,246)' />
+          </View>
+        </TouchableOpacity>
+        <View className='h-[1px] bg-gray-800 mt-4'/>
+      </View>
+      <View className='w-full h-fit p-4 flex flex-col items-center justify-center'>
+        <Input
+          onTextChange={setUsername}
+          onSubmit={() => passwordInput.current.focus()}
+          placeholder='Username'
+          ref={usernameInput}
+          value={username}
+        />
+        <Input
+          onTextChange={setPassword}
+          onSubmit={() => databaseInput.current.focus()}
+          placeholder='Password'
+          ref={passwordInput}
+          type='password'
+          value={password}
+        />
+        <Input
+          onTextChange={setDatabase}
+          onSubmit={() => serverInput.current.focus()}
+          placeholder='Database'
+          ref={databaseInput}
+          value={database}
+        />
+        <Input
+          onTextChange={setServer}
+          onSubmit={() => configInput.current.focus()}
+          placeholder='Server'
+          ref={serverInput}
+          value={server}
+        />
+        <Input
+          onTextChange={setConfig}
+          onSubmit={() => {}}
+          placeholder='Config'
+          ref={configInput}
+          value={config}
+        />
+      </View>
+      <View className='px-4'>
+        <View className='h-[1px] bg-gray-800'/>
+      </View>
+      <View className='w-full h-1/8 flex flex-row items-center justify-end p-4'>
+        <Button
+          onPress={submit}
+          title='Login'
+        />
+      </View>
+    </View>
+  )
 }

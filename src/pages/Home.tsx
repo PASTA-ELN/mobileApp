@@ -1,86 +1,114 @@
-/**
- * @file Homepage, default starting page
- */
-import React, { Component } from 'react';
-import { View, Text, ScrollView, TouchableWithoutFeedback } from 'react-native';
-import { Link, Navigate } from 'react-router-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import React from "react"
+import { Text, View } from "react-native"
+import { Link } from "react-router-native";
+import FA5Icon from "@expo/vector-icons/FontAwesome5";
 
-import { homeStyle } from '../style/index';
+import { useDataHierarchy, useDataTypes } from "hooks/localstorage";
 
-type Props = {}
+//
+// Component
+//
+export default function() {
+  //
+  // Hook calls
+  //
+  const dataTypes = useDataTypes();
+  const dataHierarchy = useDataHierarchy();
 
-type State = {
-  dataTypes: string[];
-  sortDirection: 'sort-amount-up' | 'sort-amount-down';
-}
+  //
+  // Render empty if no data
+  //
+  if(dataTypes.length === 0 || Object.keys(dataHierarchy).length === 0) 
+    return (<View></View>);
 
-export default class Home extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      dataTypes: [],
-      sortDirection: 'sort-amount-up'
-    };
-  }
-  
-  componentDidMount() {
-    this.getDataTypes();
-  }
+  //
+  // Render items
+  //
+  const items = dataTypes //TODO: move to own component
+    .filter(dataType => !dataType.startsWith('-'))
+    .filter(dataType => !dataType.startsWith('x'))
+    .map((dataType) => {
 
-  /**Extract the dataTypes from the AsyncStorage */
-  async getDataTypes() {
-    var dataTypes = await AsyncStorage.getItem('dataTypes');
-    this.setState({ dataTypes: JSON.parse(dataTypes!) });
-  }
+      //
+      // extract important data
+      //
+      const title = dataHierarchy[dataType].title;
+      const iconFamily = dataHierarchy[dataType].icon.split('.')[0];
+      const iconName = dataHierarchy[dataType].icon.split('.')[1];
 
-  /**toggle Sorting up or down */
-  toggleSortDirection() {
-    if (this.state.sortDirection === 'sort-amount-up') {
-      this.setState({ sortDirection: 'sort-amount-down' });
-      this.state.dataTypes.sort(function (a, b) {
-        return a > b ? 1 : -1;
-      });
-    } else {
-      this.setState({ sortDirection: 'sort-amount-up' });
-      this.state.dataTypes.sort(function (a, b) {
-        return a < b ? 1 : -1;
-      })
-    }
-  }
+      //
+      // render icon
+      //
+      let icon = null;
+      //
+      // Fontawesome 5
+      //
+      if(iconFamily === 'fa5s' || iconFamily === 'fa5' || iconFamily === 'fa5b'){
+        // pad width to 26 to make all icons the same size
+        icon = <FA5Icon name={iconName} style={{width: 26}} size={26} color='rgb(212,212,216)'/>
+      }
 
-  /**Render method*/
-  render() {
-    //if data is not fully loaded: prevent crash
-    if (!this.state.dataTypes)
-      return (<View/>);
+      /**
 
-    const iconColor = '#000000';
-    
-    const aList = this.state.dataTypes.map(i => {
+      //
+      // Elusive Icons 2
+      //
+      else if(iconFamily === 'ei'){
+      }
+      //
+      // Material Icons 5 & 6
+      //
+      else if(iconFamily === 'mdi' || iconFamily === 'mdi6'){
+      }
+      //
+      // Phosphor
+      //
+      else if(iconFamily === 'ph'){
+      }
+      //
+      // Remix Icons
+      //
+      else if(iconFamily === 'ri'){
+      }
+      //
+      // Code Icons
+      //
+      else if(iconFamily === 'msc'){
+      }
+      **/
+      else {
+        icon = <FA5Icon name='question-circle' size={26} color='rgb(212,212,216)'/>
+      }
+
+      //
+      // render items
+      //
       return (
-        <Link to={'/table/' + i} key={i}>
-          <View style={homeStyle.inner}>
-            <Text style={homeStyle.text}>{'  ' + i + 's'}</Text>
-            <AntDesign name='edit' size={20} style={homeStyle.icon} color={iconColor} />
+        <Link 
+          to={`/table/${dataType}`} 
+          key={`${dataType}-link`} 
+          underlayColor="rgba(255,255,255,0.1)"
+          className="w-full h-fit "  
+        >
+          <View className='w-full h-fit flex flex-row justify-start items-center bg-gray-800 rounded-3xl p-4 mb-4'>
+            {icon}
+            <Text className="text-zinc-400 text-xl ml-4" key={`${dataType}-text`}>
+              {title}
+            </Text>
           </View>
         </Link>
       )
     });
-    return (
-      <View style={homeStyle.container}>
-        <View style={{ flexDirection: 'row' }}>
-          <Text style={homeStyle.heading} >Contents</Text>
-          <TouchableWithoutFeedback onPress={() => this.toggleSortDirection()}>
-            <FontAwesome5 name={this.state.sortDirection} size={30} style={homeStyle.directionIcon} />
-          </TouchableWithoutFeedback>
-        </View>
-        <ScrollView showsVerticalScrollIndicator={true} alwaysBounceVertical={false} >
-          {aList}
-        </ScrollView>
+  
+  //
+  // Render
+  //
+  return (
+    <View className="w-full h-full p-4">
+      <View className="w-full h-fit p-2">
+        <Text className="text-zinc-300 text-4xl font-bold">Data</Text>
       </View>
-    )
-  }
+      {items}
+    </View>
+  )
 }

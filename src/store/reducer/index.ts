@@ -1,9 +1,9 @@
-import { combineReducers } from "redux";
+import { combineReducers } from '@reduxjs/toolkit'
 
-import loginReducer from './Login';
-import logReducer from './Log'
+import LogReducer from './Log'
+import LoginReducer from './Login'
 
-export default combineReducers({
-  login: loginReducer,
-  log: logReducer
-})
+export const rootReducer = combineReducers({
+  Log: LogReducer,
+  Login: LoginReducer,
+});
