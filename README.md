@@ -48,3 +48,59 @@ We use Expo Development Clients to run the PASTA mobile app. There are some nati
 First install a Dev-Client build on the Device, then start the development server and connect through the Expo QR-Code and connect to metro.
 
 We mainly use codespaces to Develop this so usually there is no setting up to do, but a install script and a Wiki Page will be Provided.
+
+## Tutorial
+1. git clone 'dev'-branch
+2. www.expo.dev -> create an account
+   - do not create a project
+3. Update npm - should be 20.
+    - sudo npm install -g n
+    - sudo n stable
+    - node --version
+4. Init npm eas
+    - sudo mkdir /usr/local/lib/node_modules
+    - sudo chmod 777 /usr/local/lib/node_modules
+    - sudo npm install -g eas-cli
+    - eas login
+5. Clean project id
+    - in app.json: this section should look like this
+        "extra": {
+        "eas": {
+          }
+        }
+6. After restart terminal **USE VS-CODE TERMINAL**
+    - npm install
+    - eas init
+      - create project
+    - npm run build:android
+      - new keystore: Y
+      - only if using "expo install" to install packages
+      - otherwise (npm install) this substep can be skipped
+      - Wait and get a coffee
+      - run in emulator: N
+7. Start on cell phone
+  - try qr-code / alternatively click link
+  - download & install -> Yes*2
+    - **MORE DETAILS**
+    - Install anyway
+8. Start development using the VS code terminal
+  - npm start   (in institution)
+  - npm run dev (at home if PC and cell are in same network)
+  - scan qr-code
+9. Create production build
+  - eas build --platform android
+  - eas submit -p android
+    -
+
+
+
+## Code
+- App.tsx start point
+- src/components: react components, possibly used multiple times
+- src/pages: home page, login page, ... all full-screen rendered
+- src/pages/Data = src/pages/data.tsx and its subparts
+- src/store: redux store: saves everything until out of date, incl. credentials
+- src/util: internal utils
+  - toast: messages from the side
+## Debugging
+- console.log -> vs-code terminal

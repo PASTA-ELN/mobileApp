@@ -24,7 +24,7 @@ global.env = Constants.expoConfig?.extra?.env || 'development';
 if (!global.btoa) {
   global.btoa = encode;
   }
-  
+
   if (!global.atob) {
   global.atob = decode;
   }
@@ -39,7 +39,7 @@ export default function App() {
   return (
     <ReduxProvider store={store}>
       <RootSiblingParent>
-        <SafeAreaView className='w-screen h-screen dark bg-gray-900'>
+        <SafeAreaView className='pt-10 dark bg-gray-900'>
           <Main />
           <StatusBar style="light" />
         </SafeAreaView>
